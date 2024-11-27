@@ -35,6 +35,12 @@ private val typography = AppTypography(
     titleLarge = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
+        fontSize = 36.sp,
+    ),
+    titleBig = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 30.sp,
     ),
     titleNormal = TextStyle(
         fontFamily = OpenSans,
