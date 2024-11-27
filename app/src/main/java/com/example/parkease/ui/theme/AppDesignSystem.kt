@@ -67,8 +67,8 @@ val LocalAppTypography = staticCompositionLocalOf {
         labelLarge = TextStyle.Default,
         labelNormal = TextStyle.Default,
         labelSmall = TextStyle.Default,
-        labelNormalSemiBold = TextStyle.Default,
         labelLargeSemiBold = TextStyle.Default,
+        labelNormalSemiBold = TextStyle.Default,
         labelSmallSemiBold = TextStyle.Default,
     )
 }

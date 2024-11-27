@@ -26,7 +26,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                // Define the NavController
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
@@ -34,7 +33,6 @@ class MainActivity : ComponentActivity() {
                         startDestination = "register",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        // Define composable destinations
                         composable("register") {
                             RegisterScreen(navController)
                         }

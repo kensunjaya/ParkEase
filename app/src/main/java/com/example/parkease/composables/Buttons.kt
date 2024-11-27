@@ -30,7 +30,6 @@ fun PrimaryButton(
     ) {
         Text(
             text = label,
-            style = AppTheme.typography.labelNormalSemiBold,
             color = AppTheme.colorScheme.secondary,
         )
     }

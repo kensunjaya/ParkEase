@@ -13,4 +13,4 @@ val Pink40 = Color(0xFF7D5260)
 val Black = Color.Black
 val White = Color.White
 val Gray = Color(0xFFBDBDBD)
-val BlueLink = Color(0xFF2196F3)
+val BlueLink = Color(0xFF0645AD)
