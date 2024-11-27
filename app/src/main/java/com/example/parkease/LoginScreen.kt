@@ -90,7 +90,7 @@ fun LoginScreen(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Row {
                 Text(
-                    text = "Haven't created an account?",
+                    text = "Don't have an account?",
                     style = AppTheme.typography.labelNormal,
                     color = AppTheme.colorScheme.primary
                 )
@@ -113,7 +113,11 @@ fun LoginScreen(
                                 "Signed in: ${user?.email}",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            navController.navigate("details/Android") // Navigate on success
+                            if (Firebase.auth.currentUser?.isEmailVerified == false) {
+                                navController.navigate("verification/${Firebase.auth.currentUser?.email}")
+                            } else {
+                                navController.navigate("home/Android") // Navigate on success
+                            }
                         },
                         onFailure = { exception ->
                             Toast.makeText(

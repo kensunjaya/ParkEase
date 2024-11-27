@@ -17,19 +17,23 @@ import com.example.parkease.ui.theme.AppTheme
 fun PrimaryButton(
     modifier: Modifier = Modifier,
     label: String,
+    disabled: Boolean = false,
     onClick: () -> Unit
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
+        enabled = !disabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = AppTheme.colorScheme.primary,
+            disabledContainerColor = Color.Gray,
             contentColor = AppTheme.colorScheme.onPrimary,
         ),
         shape = AppTheme.shape.button,
     ) {
         Text(
             text = label,
+            style = AppTheme.typography.labelNormal,
             color = AppTheme.colorScheme.secondary,
         )
     }
@@ -39,13 +43,16 @@ fun PrimaryButton(
 fun SecondaryButton(
     modifier: Modifier = Modifier,
     label: String,
+    disabled: Boolean = false,
     onClick: () -> Unit
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
+        enabled = !disabled,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = Color.Transparent,
+            disabledContainerColor = Color.Gray,
             contentColor = AppTheme.colorScheme.primary,
         ),
         shape = AppTheme.shape.button,
@@ -53,7 +60,7 @@ fun SecondaryButton(
     ) {
         Text(
             text = label,
-            style = AppTheme.typography.labelLarge,
+            style = AppTheme.typography.labelNormal,
             color = AppTheme.colorScheme.primary,
         )
     }

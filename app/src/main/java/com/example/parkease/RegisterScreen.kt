@@ -26,7 +26,9 @@ import androidx.navigation.NavController
 import com.example.parkease.composables.CustomTextField
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.ui.theme.AppTheme
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 @Composable
 
@@ -121,7 +123,8 @@ fun RegisterScreen(
                                 "Account created: ${user?.email}",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            navController.navigate("details/Android") // Navigate on success
+                            Firebase.auth.currentUser?.sendEmailVerification()
+                            navController.navigate("verification/${Firebase.auth.currentUser?.email}") // Navigate on success
                         },
                         onFailure = { exception ->
                             Toast.makeText(

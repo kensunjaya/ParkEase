@@ -55,12 +55,12 @@ private val typography = AppTypography(
     labelLarge = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontSize = 22.sp,
     ),
     labelNormal = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
     ),
     labelSmall = TextStyle(
         fontFamily = OpenSans,
@@ -70,12 +70,12 @@ private val typography = AppTypography(
     labelLargeSemiBold = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
+        fontSize = 22.sp,
     ),
     labelNormalSemiBold = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
     ),
     labelSmallSemiBold = TextStyle(
         fontFamily = OpenSans,
