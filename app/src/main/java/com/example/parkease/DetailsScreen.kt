@@ -14,11 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import kotlin.math.round
+import com.example.parkease.composables.SecondaryButton
 
 @Composable
-fun DetailsScreen(name: String, navController: NavController) {
+fun DetailsScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,5 +37,13 @@ fun DetailsScreen(name: String, navController: NavController) {
         ) {
             Text("Go Back")
         }
+        SecondaryButton(
+            onClick =
+            {
+                authViewModel.signOut()
+                navController.navigate("login")
+            },
+            label = "Sign Out"
+        )
     }
 }

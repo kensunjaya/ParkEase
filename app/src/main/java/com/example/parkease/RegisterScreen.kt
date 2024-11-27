@@ -1,5 +1,7 @@
 package com.example.parkease
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,14 +19,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.parkease.composables.CustomTextField
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.ui.theme.AppTheme
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+
+fun RegisterScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+) {
+
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -60,15 +70,16 @@ fun RegisterScreen(navController: NavController) {
             value = username,
             modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
             onValueChange = { newValue ->
-                username = newValue // Update the state when the user types
+                username = newValue
             }
         )
         CustomTextField(
             placeholder = "Enter your email",
             value = email,
+            inputType = KeyboardType.Email,
             modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
             onValueChange = { newValue ->
-                email = newValue // Update the state when the user types
+                email = newValue
             }
         )
 
@@ -76,8 +87,9 @@ fun RegisterScreen(navController: NavController) {
             placeholder = "Enter your password",
             value = password,
             modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
+            inputType = KeyboardType.Password,
             onValueChange = { newValue ->
-                password = newValue // Update the state when the user types
+                password = newValue
             }
         )
 
@@ -99,7 +111,27 @@ fun RegisterScreen(navController: NavController) {
                 )
             }
             PrimaryButton (
-                onClick = { navController.navigate("details/Android") },
+                onClick = {
+                    authViewModel.createAccount(
+                        email = email,
+                        password = password,
+                        onSuccess = { user ->
+                            Toast.makeText(
+                                navController.context,
+                                "Account created: ${user?.email}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.navigate("details/Android") // Navigate on success
+                        },
+                        onFailure = { exception ->
+                            Toast.makeText(
+                                navController.context,
+                                "Failed: ${exception?.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    )
+                },
                 label = "Register",
             )
         }

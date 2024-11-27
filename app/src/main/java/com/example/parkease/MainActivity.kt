@@ -19,6 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.parkease.ui.theme.AppTheme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,10 +29,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val navController = rememberNavController()
+                val user = Firebase.auth.currentUser
+                val startDestination =  if (user != null) {
+                    "details/{name}"
+                } else {
+                    "login"
+                }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "register",
+                        startDestination = startDestination,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("register") {
