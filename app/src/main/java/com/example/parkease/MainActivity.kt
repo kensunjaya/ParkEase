@@ -31,12 +31,15 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "home",
+                        startDestination = "register",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         // Define composable destinations
-                        composable("home") {
-                            HomeScreen(navController)
+                        composable("register") {
+                            RegisterScreen(navController)
+                        }
+                        composable("login") {
+                            LoginScreen(navController)
                         }
                         composable("details/{name}") { backStackEntry ->
                             val name = backStackEntry.arguments?.getString("name")

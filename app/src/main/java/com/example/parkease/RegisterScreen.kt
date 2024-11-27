@@ -1,6 +1,6 @@
 package com.example.parkease
 
-import android.widget.Button
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +24,7 @@ import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.ui.theme.AppTheme
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -36,9 +36,22 @@ fun HomeScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Welcome to ParkEase!",
+            text = "ParkEase",
+            modifier = Modifier.fillMaxWidth(),
+            style = AppTheme.typography.titleLarge,
+        )
+        Text(
+            text = "Parking Made Easier",
+            modifier = Modifier.fillMaxWidth(),
+            style = AppTheme.typography.titleBig,
+        )
+        Spacer(modifier = Modifier.height(100.dp))
+
+        Text(
+            text = "Create an Account",
             style = AppTheme.typography.titleNormal,
-            color = AppTheme.colorScheme.primary
+            color = AppTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -81,14 +94,15 @@ fun HomeScreen(navController: NavController) {
                 Text(
                     text = "Login",
                     style = AppTheme.typography.labelNormalSemiBold,
-                    color = AppTheme.colorScheme.anchor
+                    color = AppTheme.colorScheme.anchor,
+                    modifier = Modifier.clickable { navController.navigate("login") }
                 )
             }
-
             PrimaryButton (
                 onClick = { navController.navigate("details/Android") },
                 label = "Register",
             )
         }
+        Spacer(modifier = Modifier.height(150.dp))
     }
 }
