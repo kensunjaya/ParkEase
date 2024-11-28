@@ -50,11 +50,13 @@ fun RegisterScreen(
         Text(
             text = "ParkEase",
             modifier = Modifier.fillMaxWidth(),
+            color = AppTheme.colorScheme.primary,
             style = AppTheme.typography.titleLarge,
         )
         Text(
             text = "Parking Made Easier",
             modifier = Modifier.fillMaxWidth(),
+            color = AppTheme.colorScheme.primary,
             style = AppTheme.typography.titleBig,
         )
         Spacer(modifier = Modifier.height(100.dp))

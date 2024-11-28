@@ -98,7 +98,8 @@ private val size = AppSize(
 
 @Composable
 fun AppTheme(
-    isDarkTheme: Boolean = isSystemInDarkTheme(),
+//    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    isDarkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (isDarkTheme) darkColorScheme else lightColorScheme
