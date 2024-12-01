@@ -1,6 +1,7 @@
 package com.example.parkease
 
 import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -116,7 +117,7 @@ fun LoginScreen(
                             if (Firebase.auth.currentUser?.isEmailVerified == false) {
                                 navController.navigate("verification/${Firebase.auth.currentUser?.email}")
                             } else {
-                                navController.navigate("home/Android") // Navigate on success
+                                navController.navigate("Home") // Navigate on success
                             }
                         },
                         onFailure = { exception ->

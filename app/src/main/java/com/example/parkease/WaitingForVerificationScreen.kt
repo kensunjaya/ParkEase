@@ -57,9 +57,9 @@ fun WaitingForVerificationScreen(
             delay(3000L) // Check every 3 seconds
             Firebase.auth.currentUser?.reload()?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val isVerified = Firebase.auth.currentUser?.isEmailVerified ?: false
+                    isVerified = Firebase.auth.currentUser?.isEmailVerified ?: false
                     if (isVerified) {
-                        navController.navigate("home/${Firebase.auth.currentUser?.email}")
+                        navController.navigate("Home")
                     }
                 } else {
                     Toast.makeText(
