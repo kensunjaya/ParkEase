@@ -87,4 +87,6 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation(libs.androidx.navigation.compose)
+    implementation (libs.okhttp)
+    implementation(libs.gson)
 }
