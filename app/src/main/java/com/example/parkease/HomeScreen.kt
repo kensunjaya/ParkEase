@@ -26,13 +26,16 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.example.parkease.composables.ParkingGrid
+import com.example.parkease.interfaces.ParkingLotData
+import com.example.parkease.interfaces.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
-    var result by remember { mutableStateOf<List<Item>?>(null) }
+    var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
     var userData by remember { mutableStateOf<User?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -97,13 +100,16 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
 
         when {
             result == null -> Text(text = "Loading...")
-            result == emptyList<Item>() ->
+            result == emptyList<ParkingLotData>() ->
                 Text(text = "Unavailable")
 
-            else -> Column {
-                result!!.forEach { item ->
-                    Text(text = "${item.id.uppercase()} : ${if (item.status == 1) "Occupied" else "Empty"}", style = AppTheme.typography.labelLarge)
-                }
+//            else -> Column {
+//                result!!.forEach { item ->
+//                    Text(text = "${item.id.uppercase()} : ${if (item.status == 1) "Occupied" else "Empty"}", style = AppTheme.typography.labelLarge)
+//                }
+//            }
+            else -> {
+                ParkingGrid(result!!)
             }
         }
 
@@ -116,22 +122,10 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
                 coroutineScope.launch {
                     refetch()
                 }
-            },
-
-            ) {
+            })
+        {
             Text("Refresh")
         }
-
-        ElevatedButton(
-            onClick = {
-
-            },
-
-            ) {
-            Text("Fetch User")
-        }
-
-
 
         Spacer(modifier = Modifier.height(16.dp))
         SecondaryButton(

@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import com.example.parkease.interfaces.ParkingLotData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit
 import java.net.SocketTimeoutException
 import com.google.firebase.Timestamp
 
-suspend fun fetchValuesWithOkHttp(url: String): List<Item>? = withContext(Dispatchers.IO) {
+suspend fun fetchValuesWithOkHttp(url: String): List<ParkingLotData>? = withContext(Dispatchers.IO) {
     try {
         val client = OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -24,8 +25,8 @@ suspend fun fetchValuesWithOkHttp(url: String): List<Item>? = withContext(Dispat
         client.newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 val json = response.body?.string()
-                val type = object : TypeToken<List<Item>>() {}.type
-                Gson().fromJson<List<Item>>(json, type)
+                val type = object : TypeToken<List<ParkingLotData>>() {}.type
+                Gson().fromJson<List<ParkingLotData>>(json, type)
             } else {
                 null
             }
@@ -40,18 +41,3 @@ suspend fun fetchValuesWithOkHttp(url: String): List<Item>? = withContext(Dispat
         null
     }
 }
-
-data class Item(
-    val id: String,
-    val status: Int
-)
-
-data class ActiveParking(
-    val id: String = "",
-    val start: Timestamp? = null
-)
-
-data class User(
-    val activeParking: ActiveParking? = null,
-    val name: String = ""
-)
