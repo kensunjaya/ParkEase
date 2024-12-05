@@ -26,18 +26,55 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
     var result by remember { mutableStateOf<List<Item>?>(null) }
+    var userData by remember { mutableStateOf<User?>(null) }
     val coroutineScope = rememberCoroutineScope()
+
+    val db = FirebaseFirestore.getInstance()
+
+    fun fetchDocument(
+        collectionName: String,
+        documentId: String,
+        onSuccess: (User?) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection(collectionName).document(documentId).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val user = document.toObject(User::class.java)
+                    onSuccess(user)
+                } else {
+                    onFailure(Exception("Document does not exist"))
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
+
 
     LaunchedEffect(Unit) {
         result = fetchValuesWithOkHttp("http://192.168.90.63/getValues");
+        fetchDocument(
+            collectionName = "users",
+            documentId = Firebase.auth.currentUser!!.email!!,
+            onSuccess = { data -> userData = data
+
+            },
+            onFailure = { error ->
+                println("Error fetching collection: $error")
+            }
+        )
         println(result);
     }
+
+
 
     suspend fun refetch() {
         result = fetchValuesWithOkHttp("http://192.168.90.63/getValues");
@@ -52,13 +89,25 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     ) {
 //        Text("Welcome to Details Screen, ${Firebase.auth.currentUser?.displayName}", style = AppTheme.typography.labelLarge)
         when {
+            userData == null -> Text(text = "Fetching user...")
+            else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLarge)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when {
             result == null -> Text(text = "Loading...")
+            result == emptyList<Item>() ->
+                Text(text = "Unavailable")
+
             else -> Column {
                 result!!.forEach { item ->
                     Text(text = "${item.id.uppercase()} : ${if (item.status == 1) "Occupied" else "Empty"}", style = AppTheme.typography.labelLarge)
                 }
             }
         }
+
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -69,9 +118,20 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
                 }
             },
 
-        ) {
+            ) {
             Text("Refresh")
         }
+
+        ElevatedButton(
+            onClick = {
+
+            },
+
+            ) {
+            Text("Fetch User")
+        }
+
+
 
         Spacer(modifier = Modifier.height(16.dp))
         SecondaryButton(
