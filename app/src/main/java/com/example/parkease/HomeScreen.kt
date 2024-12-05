@@ -26,6 +26,7 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 
@@ -33,6 +34,30 @@ import kotlinx.coroutines.launch
 fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
     var result by remember { mutableStateOf<List<Item>?>(null) }
     val coroutineScope = rememberCoroutineScope()
+
+    val db = FirebaseFirestore.getInstance()
+
+    fun fetchDocument(
+        collectionName: String,
+        documentId: String,
+        onSuccess: (Map<String, Any>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection(collectionName).document(documentId).get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    if (document != null && document.exists()) {
+                        onSuccess(document.data ?: emptyMap())
+                    } else {
+                        onFailure(Exception("Document does not exist"))
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
+
 
     LaunchedEffect(Unit) {
         result = fetchValuesWithOkHttp("http://192.168.90.63/getValues");
@@ -53,6 +78,9 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
 //        Text("Welcome to Details Screen, ${Firebase.auth.currentUser?.displayName}", style = AppTheme.typography.labelLarge)
         when {
             result == null -> Text(text = "Loading...")
+            result == emptyList<Item>() ->
+                Text(text = "Unavailable")
+
             else -> Column {
                 result!!.forEach { item ->
                     Text(text = "${item.id.uppercase()} : ${if (item.status == 1) "Occupied" else "Empty"}", style = AppTheme.typography.labelLarge)
@@ -72,6 +100,29 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         ) {
             Text("Refresh")
         }
+
+        ElevatedButton(
+            onClick = {
+                fetchDocument(
+                    collectionName = "users",
+                    documentId = "kensunjaya2004@gmail.com",
+                    onSuccess = { data ->
+                        val name = data["name"] as? String
+                        val activeParking = data["activeParking"] as? Map<*, *>
+
+                        println("Name: ${name}\nActive Parking: ${activeParking}")
+                    },
+                    onFailure = { error ->
+                        println("Error fetching collection: $error")
+                    }
+                )
+            },
+
+            ) {
+            Text("Fetch User")
+        }
+
+
 
         Spacer(modifier = Modifier.height(16.dp))
         SecondaryButton(

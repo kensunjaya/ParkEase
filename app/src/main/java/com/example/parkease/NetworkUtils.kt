@@ -6,10 +6,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.util.concurrent.TimeUnit
+import java.net.SocketTimeoutException
 
 suspend fun fetchValuesWithOkHttp(url: String): List<Item>? = withContext(Dispatchers.IO) {
     try {
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
         val request = Request.Builder()
             .url(url)
             .build()
@@ -23,7 +29,12 @@ suspend fun fetchValuesWithOkHttp(url: String): List<Item>? = withContext(Dispat
                 null
             }
         }
-    } catch (e: Exception) {
+    } catch (e: SocketTimeoutException) {
+        println(e)
+        emptyList()
+    }
+
+    catch (e: Exception) {
         println(e)
         null
     }
