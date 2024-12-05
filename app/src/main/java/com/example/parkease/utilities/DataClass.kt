@@ -1,4 +1,4 @@
-package com.example.parkease.interfaces
+package com.example.parkease.utilities
 
 import com.google.firebase.Timestamp
 

@@ -1,6 +1,6 @@
 package com.example.parkease
 
-import com.example.parkease.interfaces.ParkingLotData
+import com.example.parkease.utilities.ParkingLotData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
 import java.net.SocketTimeoutException
-import com.google.firebase.Timestamp
 
 suspend fun fetchValuesWithOkHttp(url: String): List<ParkingLotData>? = withContext(Dispatchers.IO) {
     try {

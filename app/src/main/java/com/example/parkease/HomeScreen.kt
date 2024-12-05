@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
@@ -27,8 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.example.parkease.composables.ParkingGrid
-import com.example.parkease.interfaces.ParkingLotData
-import com.example.parkease.interfaces.User
+import com.example.parkease.utilities.ParkingLotData
+import com.example.parkease.utilities.User
+import com.example.parkease.utilities.fetchDocument
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
@@ -39,39 +39,17 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     var userData by remember { mutableStateOf<User?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
-    val db = FirebaseFirestore.getInstance()
-
-    fun fetchDocument(
-        collectionName: String,
-        documentId: String,
-        onSuccess: (User?) -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        db.collection(collectionName).document(documentId).get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val user = document.toObject(User::class.java)
-                    onSuccess(user)
-                } else {
-                    onFailure(Exception("Document does not exist"))
-                }
-            }
-            .addOnFailureListener { exception ->
-                onFailure(exception)
-            }
-    }
-
-
     LaunchedEffect(Unit) {
         result = fetchValuesWithOkHttp("http://192.168.90.63/getValues");
         fetchDocument(
             collectionName = "users",
             documentId = Firebase.auth.currentUser!!.email!!,
-            onSuccess = { data -> userData = data
-
+            type = User::class.java,
+            onSuccess = {
+                data -> userData = data
             },
-            onFailure = { error ->
-                println("Error fetching collection: $error")
+            onFailure = { exception ->
+                println("Error: ${exception.message}")
             }
         )
         println(result);
