@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,8 @@ import androidx.navigation.NavController
 import com.example.parkease.composables.CustomTextField
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.ui.theme.AppTheme
+import com.example.parkease.utilities.User
+import com.example.parkease.utilities.createDocumentWithFields
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -40,6 +43,14 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isRegistrationSuccessful by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isRegistrationSuccessful) {
+        if (isRegistrationSuccessful) {
+            navController.navigate("verification/${email}")
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -126,7 +137,6 @@ fun RegisterScreen(
                                 Toast.LENGTH_SHORT
                             ).show()
                             Firebase.auth.currentUser?.sendEmailVerification()
-                            navController.navigate("verification/${Firebase.auth.currentUser?.email}") // Navigate on success
                         },
                         onFailure = { exception ->
                             Toast.makeText(
@@ -134,6 +144,15 @@ fun RegisterScreen(
                                 "Failed: ${exception?.message}",
                                 Toast.LENGTH_SHORT
                             ).show()
+                        }
+                    )
+                    createDocumentWithFields(
+                        collectionName = "users",
+                        documentName = email,
+                        fields = User(activeParking = null, name = username),
+                        onSuccess = { isRegistrationSuccessful = true },
+                        onFailure = { exception ->
+                            println("Error: ${exception.message}")
                         }
                     )
                 },
