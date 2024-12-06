@@ -42,3 +42,21 @@ fun fetchCollection(
             onFailure(exception)
         }
 }
+
+
+fun <T : Any> createDocumentWithFields(
+    collectionName: String,
+    documentName: String,
+    fields: T, // Fields to store in the document
+    onSuccess: (Boolean) -> Unit, // Callback for success, returning true
+    onFailure: (Exception) -> Unit // Callback for failure
+) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection(collectionName).document(documentName).set(fields)
+        .addOnSuccessListener {
+            onSuccess(true) // Document created successfully
+        }
+        .addOnFailureListener { exception ->
+            onFailure(exception) // Handle failure
+        }
+}

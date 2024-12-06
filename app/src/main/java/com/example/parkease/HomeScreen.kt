@@ -38,9 +38,10 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
     var userData by remember { mutableStateOf<User?>(null) }
     val coroutineScope = rememberCoroutineScope()
+    val ip = "http://147.185.221.17:44176/getValues"
 
     LaunchedEffect(Unit) {
-        result = fetchValuesWithOkHttp("http://192.168.90.63/getValues");
+        result = fetchValuesWithOkHttp(ip);
         fetchDocument(
             collectionName = "users",
             documentId = Firebase.auth.currentUser!!.email!!,
@@ -58,7 +59,7 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
 
 
     suspend fun refetch() {
-        result = fetchValuesWithOkHttp("http://192.168.90.63/getValues");
+        result = fetchValuesWithOkHttp(ip);
     }
 
     Column(
@@ -104,15 +105,5 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         {
             Text("Refresh")
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        SecondaryButton(
-            onClick =
-            {
-                authViewModel.signOut()
-                navController.navigate("login")
-            },
-            label = "Sign Out"
-        )
     }
 }
