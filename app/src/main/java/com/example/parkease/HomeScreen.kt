@@ -25,6 +25,7 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.example.parkease.composables.Carousel
 import com.example.parkease.composables.ParkingGrid
 import com.example.parkease.utilities.Location
 import com.example.parkease.utilities.ParkingLotData
@@ -98,6 +99,7 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Carousel()
 //        Text("Welcome to Details Screen, ${Firebase.auth.currentUser?.displayName}", style = AppTheme.typography.labelLarge)
         when {
             userData == null -> Text(text = "Fetching user...")
