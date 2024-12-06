@@ -41,8 +41,9 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     var locationData by remember{ mutableStateOf<List<Location>?>(null) }
     var userData by remember { mutableStateOf<User?>(null) }
     val coroutineScope = rememberCoroutineScope()
-    val ip = "http://147.185.221.17:44176/getValues"
+//    val ip = "http://147.185.221.17:44176/getValues"
 
+    // Get current user data, will also be used in ActiveParking page for checking user's active parking data
     LaunchedEffect(Unit) {
 //        result = fetchValuesWithOkHttp(ip);
         fetchDocument(
@@ -59,12 +60,15 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         println(result);
     }
 
+    // Code snippets for fetching Parking Space data (occupied or not)
+    // Later to be moved to a page after user choose Location
     LaunchedEffect(locationData) {
         if (locationData != null && locationData!!.isEmpty().not()) {
             result = fetchValuesWithOkHttp(locationData!![0].ip)
         }
     }
 
+    // Call firebase API for fetching locationData
     LaunchedEffect(Unit) {
         fetchCollection(
             collectionName = "locations",
@@ -79,10 +83,12 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         )
     }
 
-
-
+    // Refresh parking space data (refetch data)
+    // Later to be moved to a Page after user choose Location
     suspend fun refetch() {
-        result = fetchValuesWithOkHttp(ip);
+        if (locationData != null && locationData!!.isEmpty().not()) {
+            result = fetchValuesWithOkHttp(locationData!![0].ip)
+        }
     }
 
     Column(
@@ -98,12 +104,13 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
             else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLarge)
         }
 
+        // Mapping locationData
         when {
             locationData == null -> Text(text = "Fetching locations...")
             else -> locationData!!.map { data ->
                 Column {
-                    Text(text = "name: ${data.name}", style = AppTheme.typography.labelNormal)
-                    Text(text = "desc: ${data.description}", style = AppTheme.typography.labelNormal)
+                    Text(text = "Name: ${data.name}", style = AppTheme.typography.labelNormal)
+                    Text(text = "Desc: ${data.description}", style = AppTheme.typography.labelNormal)
                     Text(text = "ip: ${data.ip}", style = AppTheme.typography.labelNormal)
                 }
                 Spacer(modifier = Modifier.height(4.dp))
@@ -112,6 +119,8 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Mapping parking lot data
+        // Later to be moved to a Page after user choose Location
         when {
             result == null -> Text(text = "Loading...")
             result == emptyList<ParkingLotData>() ->
@@ -123,6 +132,8 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
+        // Later to be moved to a Page after user choose Location
         ElevatedButton(
             onClick = {
                 coroutineScope.launch {
