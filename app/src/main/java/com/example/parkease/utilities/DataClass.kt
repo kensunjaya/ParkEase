@@ -14,6 +14,7 @@ data class Location(
     val ip: String = "",
     val isOpen: Boolean = false,
     val name: String = "",
+    val thumbnail: String = "",
 )
 
 data class ActiveParking(

@@ -84,11 +84,13 @@ dependencies {
     implementation(libs.androidx.runtime.rxjava2)
     implementation(libs.androidx.navigation.compose)
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     implementation(libs.androidx.navigation.compose)
     implementation (libs.okhttp)
     implementation(libs.gson)
-    implementation ("com.google.accompanist:accompanist-pager:0.28.0")
-    implementation ("com.google.accompanist:accompanist-pager-indicators:0.28.0")
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.coil.compose)
+
 }

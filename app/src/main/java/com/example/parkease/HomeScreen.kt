@@ -88,7 +88,7 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     // Later to be moved to a Page after user choose Location
     suspend fun refetch() {
         if (locationData != null && locationData!!.isEmpty().not()) {
-            result = fetchValuesWithOkHttp(locationData!![0].ip)
+            result = fetchValuesWithOkHttp(locationData!![1].ip)
         }
     }
 
@@ -99,24 +99,16 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Carousel()
-//        Text("Welcome to Details Screen, ${Firebase.auth.currentUser?.displayName}", style = AppTheme.typography.labelLarge)
         when {
             userData == null -> Text(text = "Fetching user...")
-            else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLarge)
+            else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLargeSemiBold)
         }
 
-        // Mapping locationData
+        Spacer(modifier = Modifier.height(16.dp))
+
         when {
-            locationData == null -> Text(text = "Fetching locations...")
-            else -> locationData!!.map { data ->
-                Column {
-                    Text(text = "Name: ${data.name}", style = AppTheme.typography.labelNormal)
-                    Text(text = "Desc: ${data.description}", style = AppTheme.typography.labelNormal)
-                    Text(text = "ip: ${data.ip}", style = AppTheme.typography.labelNormal)
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-            }
+            locationData == null -> Text(text = "Loading...")
+            else -> Carousel(locationData = locationData!!)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
