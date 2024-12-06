@@ -26,8 +26,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.example.parkease.composables.ParkingGrid
+import com.example.parkease.utilities.Location
 import com.example.parkease.utilities.ParkingLotData
 import com.example.parkease.utilities.User
+import com.example.parkease.utilities.fetchCollection
 import com.example.parkease.utilities.fetchDocument
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
@@ -36,12 +38,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
     var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
+    var locationData by remember{ mutableStateOf<List<Location>?>(null) }
     var userData by remember { mutableStateOf<User?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val ip = "http://147.185.221.17:44176/getValues"
 
     LaunchedEffect(Unit) {
-        result = fetchValuesWithOkHttp(ip);
+//        result = fetchValuesWithOkHttp(ip);
         fetchDocument(
             collectionName = "users",
             documentId = Firebase.auth.currentUser!!.email!!,
@@ -54,6 +57,26 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
             }
         )
         println(result);
+    }
+
+    LaunchedEffect(locationData) {
+        if (locationData != null && locationData!!.isEmpty().not()) {
+            result = fetchValuesWithOkHttp(locationData!![0].ip)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        fetchCollection(
+            collectionName = "locations",
+            type = Location::class.java,
+            onSuccess = { data ->
+                locationData = data.filterNotNull()
+                println("Fetched locations: $locationData")
+            },
+            onFailure = { exception ->
+                println("Error: ${exception.message}")
+            }
+        )
     }
 
 
@@ -75,24 +98,28 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
             else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLarge)
         }
 
+        when {
+            locationData == null -> Text(text = "Fetching locations...")
+            else -> locationData!!.map { data ->
+                Column {
+                    Text(text = "name: ${data.name}", style = AppTheme.typography.labelNormal)
+                    Text(text = "desc: ${data.description}", style = AppTheme.typography.labelNormal)
+                    Text(text = "ip: ${data.ip}", style = AppTheme.typography.labelNormal)
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         when {
             result == null -> Text(text = "Loading...")
             result == emptyList<ParkingLotData>() ->
                 Text(text = "Unavailable")
-
-//            else -> Column {
-//                result!!.forEach { item ->
-//                    Text(text = "${item.id.uppercase()} : ${if (item.status == 1) "Occupied" else "Empty"}", style = AppTheme.typography.labelLarge)
-//                }
-//            }
             else -> {
                 ParkingGrid(result!!)
             }
         }
-
-
 
         Spacer(modifier = Modifier.height(16.dp))
 

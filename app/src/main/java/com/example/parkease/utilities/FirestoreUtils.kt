@@ -27,15 +27,18 @@ fun <T : Any> fetchDocument(
 }
 
 // Fetch all documents in a collection
-fun fetchCollection(
+fun <T : Any> fetchCollection(
     collectionName: String,
-    onSuccess: (List<Map<String, Any>>) -> Unit,
+    type: Class<T>,
+    onSuccess: (List<T?>) -> Unit,
     onFailure: (Exception) -> Unit
 ) {
     val db = FirebaseFirestore.getInstance()
     db.collection(collectionName).get()
         .addOnSuccessListener { result ->
-            val documents = result.map { it.data }
+            val documents = result.documents.map { document ->
+                document.toObject(type)
+            }
             onSuccess(documents)
         }
         .addOnFailureListener { exception ->
