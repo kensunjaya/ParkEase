@@ -7,20 +7,20 @@ data class ParkingLotData(
     val status: Int,
 )
 
-data class Location(
-    val costPerHour: Int = 0,
-    val description: String = "",
-    val id: String = "",
-    val ip: String = "",
-    val isOpen: Boolean = false,
-    val name: String = "",
-    val thumbnail: String = "",
+open class Location(
+    var costPerHour: Int = 3000,
+    var description: String = "",
+    var id: String = "",
+    var ip: String = "",
+    var isOpen: Boolean = false,
+    var name: String = "",
+    var thumbnail: String = "",
 )
 
-data class ActiveParking(
-    val id: String = "",
-    val start: Timestamp? = null
-)
+class ActiveParking(
+    var activeParkingId: String = "",
+    var start: Timestamp? = null
+) : Location()
 
 data class User(
     val activeParking: ActiveParking? = null,

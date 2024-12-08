@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.parkease.composables.Carousel
 import com.example.parkease.composables.ParkingGrid
-import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.utilities.Location
 import com.example.parkease.utilities.ParkingLotData
 import com.example.parkease.utilities.User
@@ -40,44 +39,27 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
+fun ViewParkingLot(locationId: String, navController: NavController) {
     var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
-    var locationData by remember{ mutableStateOf<List<Location>?>(null) }
-    var currentPage by remember { mutableStateOf(0) }
-    var userData by remember { mutableStateOf<User?>(null) }
+    var locationData by remember{ mutableStateOf<Location?>(null) }
     val coroutineScope = rememberCoroutineScope()
-//    val ip = "http://147.185.221.17:44176/getValues"
-
-    // Get current user data, will also be used in ActiveParking page for checking user's active parking data
-    LaunchedEffect(Unit) {
-        fetchDocument(
-            collectionName = "users",
-            documentId = Firebase.auth.currentUser!!.email!!,
-            type = User::class.java,
-            onSuccess = {
-                data -> userData = data
-            },
-            onFailure = { exception ->
-                println("Error: ${exception.message}")
-            }
-        )
-    }
 
     // Code snippets for fetching Parking Space data (occupied or not)
     // Later to be moved to a page after user choose Location
     LaunchedEffect(locationData) {
-        if (locationData != null && locationData!!.isEmpty().not()) {
-            result = fetchValuesWithOkHttp(locationData!![1].ip)
+        if (locationData != null) {
+            result = fetchValuesWithOkHttp(locationData!!.ip)
         }
     }
 
     // Call firebase API for fetching locationData
     LaunchedEffect(Unit) {
-        fetchCollection(
+        fetchDocument(
             collectionName = "locations",
+            documentId = locationId,
             type = Location::class.java,
             onSuccess = { data ->
-                locationData = data.filterNotNull()
+                locationData = data
                 println("Fetched locations: $locationData")
             },
             onFailure = { exception ->
@@ -89,8 +71,8 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     // Refresh parking space data (refetch data)
     // Later to be moved to a Page after user choose Location
     suspend fun refetch() {
-        if (locationData != null && locationData!!.isEmpty().not()) {
-            result = fetchValuesWithOkHttp(locationData!![1].ip)
+        if (locationData != null) {
+            result = fetchValuesWithOkHttp(locationData!!.ip)
         }
     }
 
@@ -101,59 +83,48 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when {
-            userData == null -> Text(text = "Fetching user...")
-            else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLargeSemiBold)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        when {
-            userData?.activeParking != null -> {
-                Text(text = "You have an active parking session", style = AppTheme.typography.labelNormalSemiBold, color = AppTheme.colorScheme.anchor)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        when {
-            locationData == null -> Text(text = "Loading...")
-            else -> Carousel(locationData = locationData!!) { newPageIndex ->
-                currentPage = newPageIndex
-            }
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Mapping parking lot data
         // Later to be moved to a Page after user choose Location
-//        when {
-//            result == null -> Text(text = "Loading...")
-//            result == emptyList<ParkingLotData>() ->
-//                Text(text = "Unavailable")
-//            else -> {
-//                ParkingGrid(result!!)
-//            }
-//        }
 
-        // Later to be moved to a Page after user choose Location
-
-        when (userData?.activeParking) {
-            null -> ElevatedButton(
-                onClick = {
-                    navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
-                })
-            {
-                Text("View Parking Lot")
+        when {
+            locationData == null -> Text(text = "Loading...")
+            else -> {
+                Text(
+                    text = locationData!!.name,
+                    style = AppTheme.typography.titleBig,
+                    color = AppTheme.colorScheme.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
-            else -> Text(
-                text = "You must end your current parking session before booking a new one.",
-                style = AppTheme.typography.labelNormal,
-                color = AppTheme.colorScheme.anchor,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                textAlign = TextAlign.Center
-            )
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when (result) {
+            null -> Text(text = "Loading...")
+            emptyList<ParkingLotData>() ->
+                Text(text = "Connection Timeout. Server is possibly down or unreachable.")
+            else -> {
+                ParkingGrid(result!!)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        // Later to be moved to a Page after user choose Location
+        ElevatedButton(
+            onClick = {
+                coroutineScope.launch {
+                    refetch()
+                }
+            })
+        {
+            Text("Refresh")
+        }
     }
 }

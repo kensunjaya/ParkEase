@@ -32,7 +32,7 @@ fun ParkingSlotCard(
             Text(
                 text = label.uppercase(),
                 modifier = Modifier.align(Alignment.Center),
-                style = AppTheme.typography.labelNormalSemiBold,
+                style = AppTheme.typography.labelLargeSemiBold,
             )
         }
     }

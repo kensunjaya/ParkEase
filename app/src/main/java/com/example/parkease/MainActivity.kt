@@ -84,6 +84,16 @@ class MainActivity : ComponentActivity() {
                                 Log.e("NavigationError", "Email argument is missing")
                             }
                         }
+
+                        composable("viewParkingLot/{locationId}") { navBackStackEntry ->
+                            val locationId = navBackStackEntry.arguments?.getString("locationId")
+                            if (locationId != null) {
+                                ViewParkingLot(locationId = locationId, navController = navController)
+                            } else {
+                                // Handle case where locationId is null
+                                Log.e("NavigationError", "Location ID argument is missing")
+                            }
+                        }
 //                        composable("home/{name}") { backStackEntry ->
 //                            val name = backStackEntry.arguments?.getString("name")
 //                            HomeScreen(name = name ?: "Unknown", navController)

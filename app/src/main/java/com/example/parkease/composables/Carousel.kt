@@ -5,6 +5,7 @@
     import androidx.compose.foundation.shape.RoundedCornerShape
     import androidx.compose.material.Text
     import androidx.compose.material3.Card
+    import androidx.compose.material3.ElevatedButton
     import androidx.compose.runtime.Composable
     import androidx.compose.runtime.LaunchedEffect
     import androidx.compose.ui.Alignment
@@ -28,10 +29,17 @@
     @OptIn(ExperimentalPagerApi::class)
     @Composable
     fun Carousel(
-        locationData: List<Location>
+        locationData: List<Location>,
+        onPageChanged: (Int) -> Unit // Callback for the current page index
     ) {
         val pagerState = rememberPagerState(initialPage = 0)
         val imageSlider = locationData.map { it.thumbnail }
+
+        // Trigger the callback whenever the current page changes
+        LaunchedEffect(pagerState.currentPage) {
+            onPageChanged(pagerState.currentPage)
+        }
+
         Column {
             HorizontalPager(
                 count = imageSlider.size,
@@ -44,7 +52,7 @@
                 Card(
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .graphicsLayer{
+                        .graphicsLayer {
                             val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
 
                             lerp(
@@ -86,11 +94,18 @@
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = locationData[pagerState.currentPage].name, style = AppTheme.typography.titleBig, textAlign = TextAlign.Center)
+                Text(
+                    text = locationData[pagerState.currentPage].name,
+                    style = AppTheme.typography.titleBig,
+                    textAlign = TextAlign.Center
+                )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = locationData[pagerState.currentPage].description, style = AppTheme.typography.labelNormal, textAlign = TextAlign.Center)
+                Text(
+                    text = locationData[pagerState.currentPage].description,
+                    style = AppTheme.typography.labelNormal,
+                    textAlign = TextAlign.Center
+                )
             }
-
         }
-
     }
+
