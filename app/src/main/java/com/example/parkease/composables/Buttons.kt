@@ -18,6 +18,8 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     label: String,
     disabled: Boolean = false,
+    color: Color = AppTheme.colorScheme.primary,
+    textColor: Color = Color.White,
     onClick: () -> Unit
 ) {
     Button(
@@ -25,7 +27,7 @@ fun PrimaryButton(
         onClick = onClick,
         enabled = !disabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppTheme.colorScheme.primary,
+            containerColor = color,
             disabledContainerColor = Color.Gray,
             contentColor = AppTheme.colorScheme.onPrimary,
         ),
@@ -34,7 +36,7 @@ fun PrimaryButton(
         Text(
             text = label,
             style = AppTheme.typography.labelNormal,
-            color = AppTheme.colorScheme.secondary,
+            color = textColor,
         )
     }
 }
@@ -44,6 +46,7 @@ fun SecondaryButton(
     modifier: Modifier = Modifier,
     label: String,
     disabled: Boolean = false,
+    color: Color = Color.Transparent,
     onClick: () -> Unit
 ) {
     Button(
