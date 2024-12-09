@@ -1,5 +1,6 @@
 package com.example.parkease.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +29,16 @@ fun ParkingSlotCard(
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
         onClick = {
-            navController.navigate("bookingPage/${locationId}/${parkingSpaceId}")
+            if (isOccupied.not()) {
+                navController.navigate("bookingPage/${locationId}/${parkingSpaceId}")
+            }
+            else {
+                Toast.makeText(
+                    navController.context,
+                    "$parkingSpaceId is occupied. Please select another space.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     ) {
         Box(
