@@ -16,6 +16,7 @@ data class AppColorScheme (
     val secondary: Color,
     val onSecondary: Color,
     val anchor: Color,
+    val softBlue: Color
 )
 
 //typography
@@ -55,6 +56,7 @@ val LocalAppColorScheme = staticCompositionLocalOf {
         secondary = Color.Unspecified,
         onSecondary = Color.Unspecified,
         anchor = Color.Unspecified,
+        softBlue = Color.Unspecified
     )
 }
 

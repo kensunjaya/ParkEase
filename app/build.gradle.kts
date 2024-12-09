@@ -92,5 +92,7 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.coil.compose)
+    implementation ("com.google.accompanist:accompanist-pager:0.28.0")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.28.0")
 
 }

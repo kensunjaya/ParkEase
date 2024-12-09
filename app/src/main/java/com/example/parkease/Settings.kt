@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,7 +17,12 @@ import com.example.parkease.composables.SecondaryButton
 @Composable
 fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = viewModel()) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Text("Settings Page")
+        Text(
+            "Settings Page",
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .padding(top = 50.dp)
+        )
         Spacer(modifier = Modifier.height(16.dp))
         SecondaryButton(
             onClick =
@@ -23,7 +30,8 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
                 authViewModel.signOut()
                 navController.navigate("login")
             },
-            label = "Sign Out"
+            label = "Sign Out",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
 }
