@@ -15,7 +15,12 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalParking
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
@@ -36,6 +41,7 @@ data class TabBarItem(
 )
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -57,11 +63,25 @@ class MainActivity : ComponentActivity() {
                 } else {
                     "login"
                 }
-                Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-                    if (currentRoute in listOf("Home", "Active Parking", "Settings")) {
-                        TabView(tabBarItems, navController)
-                    }
-                }) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        if (currentRoute in listOf("Home", "Active Parking", "Settings")) {
+                            TabView(tabBarItems, navController)
+                        }
+                    },
+                    topBar = {
+                        TopAppBar(
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = AppTheme.colorScheme.softBlue,
+                                titleContentColor = AppTheme.colorScheme.primary,
+                            ),
+                            title = {
+                                Text("ParkEase", style = AppTheme.typography.labelLargeSemiBold)
+                            }
+                        )
+                    },
+                ) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = startDestination,
