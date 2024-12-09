@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.WatchLater
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -99,9 +106,10 @@ fun ActiveParkingScreen(navController: NavController) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Your Parking Session",
-            style = AppTheme.typography.titleBig,
+            style = AppTheme.typography.labelLargeSemiBold,
             color = AppTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -135,7 +143,7 @@ fun ActiveParkingScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         androidx.compose.material3.Icon(
-                            painter = painterResource(id = R.drawable.ic_pinpoint), // Replace with actual icon
+                            imageVector = Icons.Filled.LocationOn, // Replace with actual icon
                             contentDescription = "Location",
                             tint = AppTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
@@ -151,8 +159,24 @@ fun ActiveParkingScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         androidx.compose.material3.Icon(
-                            painter = painterResource(id = R.drawable.ic_time), // Replace with actual icon
-                            contentDescription = "Start Time",
+                            imageVector = Icons.Filled.MyLocation, // Replace with actual icon
+                            contentDescription = "Location",
+                            tint = AppTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = activeParkingData?.parkingSlotId ?: "N/A",
+                            style = AppTheme.typography.labelLargeSemiBold
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Filled.WatchLater, // Replace with actual icon
+                            contentDescription = "Start",
                             tint = AppTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp) // Adjust size as needed
                         )
@@ -167,7 +191,7 @@ fun ActiveParkingScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         androidx.compose.material3.Icon(
-                            painter = painterResource(id = R.drawable.ic_money), // Replace with actual icon
+                            imageVector = Icons.Filled.AttachMoney, // Replace with actual icon
                             contentDescription = "Cost",
                             tint = AppTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)

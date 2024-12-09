@@ -17,17 +17,18 @@ open class Location(
     var thumbnail: String = "",
 )
 
-class ActiveParking(
-    var activeParkingId: String = "",
+open class ActiveParking(
+    var parkingSlotId: String = "",
+    var locationId: String = "",
     var start: Timestamp? = null
 ) : Location()
 
+data class Booking(
+    var end: Timestamp? = null,
+) : ActiveParking()
+
 data class User(
     val activeParking: ActiveParking? = null,
-    val name: String = ""
-)
-
-data class BookingData(
-    var parkingSpaceId: String = "",
-    var locationId: String = ""
+    val name: String = "",
+    val booking: Booking? = null,
 )

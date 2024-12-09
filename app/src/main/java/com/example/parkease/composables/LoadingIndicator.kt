@@ -12,7 +12,7 @@ import com.example.parkease.ui.theme.AppTheme
 fun CircularIndicator() {
     CircularProgressIndicator(
         modifier = Modifier.width(64.dp),
-        color = AppTheme.colorScheme.primary,
+        color = AppTheme.colorScheme.bluePale,
         trackColor = MaterialTheme.colorScheme.surfaceVariant,
     )
 }

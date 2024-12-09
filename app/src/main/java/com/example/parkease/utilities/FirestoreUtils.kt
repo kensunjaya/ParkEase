@@ -50,16 +50,34 @@ fun <T : Any> fetchCollection(
 fun <T : Any> createDocumentWithFields(
     collectionName: String,
     documentName: String,
-    fields: T, // Fields to store in the document
-    onSuccess: (Boolean) -> Unit, // Callback for success, returning true
-    onFailure: (Exception) -> Unit // Callback for failure
+    fields: T,
+    onSuccess: (Boolean) -> Unit,
+    onFailure: (Exception) -> Unit
 ) {
     val db = FirebaseFirestore.getInstance()
     db.collection(collectionName).document(documentName).set(fields)
         .addOnSuccessListener {
-            onSuccess(true) // Document created successfully
+            onSuccess(true)
         }
         .addOnFailureListener { exception ->
-            onFailure(exception) // Handle failure
+            onFailure(exception)
+        }
+}
+
+fun <T: Any> editDocumentField(
+    collectionName: String,
+    documentName: String,
+    field: String,
+    value: T,
+    onSuccess: (Boolean) -> Unit,
+    onFailure: (Exception) -> Unit
+) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection(collectionName).document(documentName).update(field, value)
+        .addOnSuccessListener {
+            onSuccess(true)
+        }
+        .addOnFailureListener { exception ->
+            onFailure(exception)
         }
 }

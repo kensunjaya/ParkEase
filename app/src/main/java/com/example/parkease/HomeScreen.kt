@@ -3,10 +3,13 @@ package com.example.parkease
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
@@ -41,53 +44,46 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
-    var locationData by remember{ mutableStateOf<List<Location>?>(null) }
+fun HomeScreen(
+    name: String,
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+) {
+    var locationData by remember { mutableStateOf<List<Location>?>(null) }
     var currentPage by remember { mutableStateOf(0) }
     var userData by remember { mutableStateOf<User?>(null) }
-    val coroutineScope = rememberCoroutineScope()
-//    val ip = "http://147.185.221.17:44176/getValues"
 
-    // Get current user data, will also be used in ActiveParking page for checking user's active parking data
+    // Fetch user data
     LaunchedEffect(Unit) {
         fetchDocument(
             collectionName = "users",
             documentId = Firebase.auth.currentUser!!.email!!,
             type = User::class.java,
-            onSuccess = {
-                    data -> userData = data
-            },
-            onFailure = { exception ->
-                println("Error: ${exception.message}")
-            }
+            onSuccess = { data -> userData = data },
+            onFailure = { exception -> println("Error: ${exception.message}") }
         )
     }
 
-
-    // Call firebase API for fetching locationData
+    // Fetch location data
     LaunchedEffect(Unit) {
         fetchCollection(
             collectionName = "locations",
             type = Location::class.java,
-            onSuccess = { data ->
-                locationData = data.filterNotNull()
-                println("Fetched locations: $locationData")
-            },
-            onFailure = { exception ->
-                println("Error: ${exception.message}")
-            }
+            onSuccess = { data -> locationData = data.filterNotNull() },
+            onFailure = { exception -> println("Error: ${exception.message}") }
         )
     }
 
-    if (locationData == null || userData == null)  {
+    if (locationData == null || userData == null) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            androidx.compose.material.Text(
-                text = "Fetching Data",
-                style = AppTheme.typography.labelNormal
+            Text(
+                text = "Please wait...",
+                style = AppTheme.typography.labelNormal,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(32.dp))
             CircularIndicator()
@@ -99,53 +95,54 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when {
-            userData == null -> Text(text = "Fetching user...")
-            else -> Text(text = "Welcome back, ${userData!!.name}", style = AppTheme.typography.labelLargeSemiBold)
-        }
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Hi, ${userData!!.name}!",
+            style = AppTheme.typography.labelLargeSemiBold,
+            color = AppTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
-        when {
-            userData?.activeParking != null -> {
-                Text(text = "You have an active parking session", style = AppTheme.typography.labelNormalSemiBold, color = AppTheme.colorScheme.anchor)
-            }
-        }
+        Text(
+            text = "Welcome back to ParkEase. Let's find the perfect spot for your vehicle!",
+            style = AppTheme.typography.labelNormal,
+            textAlign = TextAlign.Center,
+            color = AppTheme.colorScheme.primary
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        when {
-            locationData == null -> Text(text = "Loading...")
-            else -> Carousel(locationData = locationData!!) { newPageIndex ->
-                currentPage = newPageIndex
-            }
-        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Carousel(locationData = locationData!!) { newPageIndex -> currentPage = newPageIndex }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         when (userData?.activeParking) {
-            null ->
-                PrimaryButton(
-                    onClick = {
-                        navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
-                    },
-                    label = "View available spaces",
-                    disabled = locationData == null || userData == null,
-                    modifier = Modifier.padding(4.dp)
-                )
-
+            null -> PrimaryButton(
+                onClick = {
+                    navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
+                },
+                label = "Explore Available Spaces",
+                disabled = locationData == null || userData == null,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(width = 250.dp, height = 55.dp)
+                    .align(Alignment.CenterHorizontally),
+                color = AppTheme.colorScheme.bluePale,
+                textColor = AppTheme.colorScheme.secondary
+            )
             else -> Text(
-                text = "You must end your current parking session before booking a new one.",
+                text = "You currently have an active parking session. End it before booking a new spot.",
                 style = AppTheme.typography.labelNormal,
+                textAlign = TextAlign.Center,
                 color = AppTheme.colorScheme.anchor,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                textAlign = TextAlign.Center
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
         }
-
     }
 }

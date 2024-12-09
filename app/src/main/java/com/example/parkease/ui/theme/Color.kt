@@ -15,4 +15,6 @@ val White = Color.White
 val Gray = Color(0xFFBDBDBD)
 val BlueLink = Color(0xFF0645AD)
 
-val SoftBlue = Color(0xFFc2d6f6)
+val SoftBlue = Color(0xFFC2D6F6)
+val BlueTeal = Color(0xFF60B0C0)
+val bluePale = Color(0xFF4682B4)

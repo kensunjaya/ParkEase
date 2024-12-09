@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
 
                             if (locationId != null && parkingSpaceId != null) {
                                 BookingPage(
-                                    locationId = locationId,
+                                    locId = locationId,
                                     parkingSpaceId = parkingSpaceId,
                                     navController = navController
                                 )

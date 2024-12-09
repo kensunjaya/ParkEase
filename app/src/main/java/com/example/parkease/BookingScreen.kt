@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Text
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
@@ -32,26 +36,32 @@ import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
 import com.example.parkease.composables.Carousel
 import com.example.parkease.composables.CircularIndicator
+import com.example.parkease.composables.ConfirmationDialog
 import com.example.parkease.composables.ParkingGrid
+import com.example.parkease.composables.PrimaryButton
+import com.example.parkease.utilities.Booking
 import com.example.parkease.utilities.Location
 import com.example.parkease.utilities.ParkingLotData
 import com.example.parkease.utilities.User
+import com.example.parkease.utilities.editDocumentField
 import com.example.parkease.utilities.fetchCollection
 import com.example.parkease.utilities.fetchDocument
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavController) {
+fun BookingPage(locId: String, parkingSpaceId: String, navController: NavController) {
     var locationData by remember { mutableStateOf<Location?>(null) }
+    val openAlertDialog = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     // Fetch location data
     LaunchedEffect(Unit) {
         fetchDocument(
             collectionName = "locations",
-            documentId = locationId,
+            documentId = locId,
             type = Location::class.java,
             onSuccess = { data ->
                 locationData = data
@@ -78,6 +88,45 @@ fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavCo
             Spacer(modifier = Modifier.height(32.dp))
         }
         return
+    }
+
+    when {
+        openAlertDialog.value -> {
+            ConfirmationDialog(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    openAlertDialog.value = false
+                    editDocumentField(
+                        collectionName = "users",
+                        documentName = Firebase.auth.currentUser!!.email!!,
+                        field = "booking",
+                        value = Booking(
+                            end = Timestamp((System.currentTimeMillis() + 600000) / 1000, 0)
+                        ).apply {
+                            parkingSlotId = parkingSpaceId
+                            locationId = locId
+                            start = Timestamp(System.currentTimeMillis() / 1000, 0)
+                        },
+                        onSuccess = { success ->
+                            if (success) {
+                                println("Successfully booked parking space $parkingSpaceId")
+                            }
+                        },
+                        onFailure = { exception ->
+                            println("Error: ${exception.message}")
+                        }
+                    )
+                    Toast.makeText(
+                        navController.context,
+                        "You've successfully booked $parkingSpaceId. You have 10 minutes remaining to park your vehicle.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
+                dialogTitle = "Confirm Booking",
+                dialogText = "Are you sure you want to book parking space $parkingSpaceId? Once confirmed, you have 10 minutes to park your vehicle.",
+                icon = Icons.Default.Info
+            )
+        }
     }
 
     Column(
@@ -148,19 +197,19 @@ fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavCo
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ElevatedButton(
+                PrimaryButton(
                     onClick = {
-                        coroutineScope.launch {
-                            // Nanti diisi action buat logic booking parking space
-                        }
+                        openAlertDialog.value = true
                     },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Confirm Booking",
-                        style = AppTheme.typography.labelLargeSemiBold
-                    )
-                }
+                    label = "Confirm Booking",
+                    disabled = locationData == null,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(width = 250.dp, height = 50.dp)
+                        .align(Alignment.CenterHorizontally),
+                    color = AppTheme.colorScheme.bluePale,
+                    textColor = AppTheme.colorScheme.secondary
+                )
             }
         }
     }

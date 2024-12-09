@@ -31,11 +31,11 @@ fun PrimaryButton(
             disabledContainerColor = Color.Gray,
             contentColor = AppTheme.colorScheme.onPrimary,
         ),
-        shape = AppTheme.shape.button,
+        shape = AppTheme.shape.container,
     ) {
         Text(
             text = label,
-            style = AppTheme.typography.labelNormal,
+            style = AppTheme.typography.labelNormalSemiBold,
             color = textColor,
         )
     }
@@ -58,12 +58,12 @@ fun SecondaryButton(
             disabledContainerColor = Color.Gray,
             contentColor = AppTheme.colorScheme.primary,
         ),
-        shape = AppTheme.shape.button,
+        shape = AppTheme.shape.container,
         border = BorderStroke(2.dp, AppTheme.colorScheme.primary),
     ) {
         Text(
             text = label,
-            style = AppTheme.typography.labelNormal,
+            style = AppTheme.typography.labelNormalSemiBold,
             color = AppTheme.colorScheme.primary,
         )
     }

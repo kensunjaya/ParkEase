@@ -1,6 +1,5 @@
-package com.example.parkease
+package com.example.parkease.utilities
 
-import com.example.parkease.utilities.ParkingLotData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -13,9 +12,9 @@ import java.net.SocketTimeoutException
 suspend fun fetchValuesWithOkHttp(url: String): List<ParkingLotData>? = withContext(Dispatchers.IO) {
     try {
         val client = OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(25, TimeUnit.SECONDS)
+            .writeTimeout(25, TimeUnit.SECONDS)
             .build()
         val request = Request.Builder()
             .url(url)

@@ -95,8 +95,8 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(width = 200.dp, height = 60.dp),
-            color = AppTheme.colorScheme.softBlue,
-            textColor = Color.Black
+            color = AppTheme.colorScheme.bluePale,
+            textColor = AppTheme.colorScheme.secondary
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -115,8 +115,8 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(width = 200.dp, height = 60.dp),
-            color = AppTheme.colorScheme.softBlue,
-            textColor = Color.Black
+            color = AppTheme.colorScheme.bluePale,
+            textColor = AppTheme.colorScheme.secondary
         )
     }
 }
