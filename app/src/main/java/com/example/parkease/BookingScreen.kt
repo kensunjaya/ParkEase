@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +27,9 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import coil.compose.rememberAsyncImagePainter
 import com.example.parkease.composables.Carousel
 import com.example.parkease.composables.ParkingGrid
 import com.example.parkease.utilities.Location
@@ -40,10 +43,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavController) {
-    var locationData by remember{ mutableStateOf<Location?>(null) }
+    var locationData by remember { mutableStateOf<Location?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
-    // Call firebase API for fetching locationData
+    // Fetch location data
     LaunchedEffect(Unit) {
         fetchDocument(
             collectionName = "locations",
@@ -51,7 +54,7 @@ fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavCo
             type = Location::class.java,
             onSuccess = { data ->
                 locationData = data
-                println("Fetched locations: $locationData")
+                println("Fetched location: $locationData")
             },
             onFailure = { exception ->
                 println("Error: ${exception.message}")
@@ -59,23 +62,37 @@ fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavCo
         )
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mapping parking lot data
-        // Later to be moved to a Page after user choose Location
-
+        // Display loading or fetched data
         when {
-            locationData == null -> Text(text = "Loading...")
+            locationData == null -> {
+                Text(
+                    text = "Loading location details...",
+                    style = AppTheme.typography.titleBig,
+                    color = AppTheme.colorScheme.onBackground,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
             else -> {
+                // Location details
+                Image(
+                    painter = rememberAsyncImagePainter(model = locationData!!.thumbnail),
+                    contentDescription = locationData!!.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentScale = ContentScale.Crop
+                )
                 Text(
                     text = locationData!!.name,
                     style = AppTheme.typography.titleBig,
@@ -84,14 +101,49 @@ fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavCo
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = parkingSpaceId,
-                    style = AppTheme.typography.titleBig,
-                    color = AppTheme.colorScheme.primary,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    text = "Parking Slot: $parkingSpaceId",
+                    style = AppTheme.typography.labelLargeSemiBold,
+                    color = AppTheme.colorScheme.primary
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Location Details:",
+                        style = AppTheme.typography.labelLargeSemiBold,
+                        color = AppTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = locationData!!.description,
+                        style = AppTheme.typography.labelNormal,
+                        color = AppTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Cost per Hour: Rp ${locationData!!.costPerHour}",
+                        style = AppTheme.typography.labelNormalSemiBold,
+                        color = AppTheme.colorScheme.primary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ElevatedButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            // Nanti diisi action buat logic booking parking space
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Confirm Booking",
+                        style = AppTheme.typography.labelLargeSemiBold
+                    )
+                }
             }
         }
-
     }
 }
