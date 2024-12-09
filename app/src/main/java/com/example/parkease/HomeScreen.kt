@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +28,7 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.example.parkease.composables.Carousel
 import com.example.parkease.composables.ParkingGrid
@@ -142,7 +145,12 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
             null -> ElevatedButton(
                 onClick = {
                     navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
-                })
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppTheme.colorScheme.softBlue,
+                    disabledContainerColor = Color.Gray,
+                    contentColor = AppTheme.colorScheme.onPrimary,
+                ),)
             {
                 Text("View Parking Lot")
             }

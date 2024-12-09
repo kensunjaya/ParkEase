@@ -19,6 +19,7 @@ private val darkColorScheme = AppColorScheme(
     secondary = Black,
     onSecondary = Gray,
     anchor = BlueLink,
+    softBlue = SoftBlue
 )
 
 private val lightColorScheme = AppColorScheme(
@@ -29,6 +30,7 @@ private val lightColorScheme = AppColorScheme(
     secondary = White,
     onSecondary = Gray,
     anchor = BlueLink,
+    softBlue = SoftBlue
 )
 
 private val typography = AppTypography(
