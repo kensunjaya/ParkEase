@@ -28,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.parkease.composables.Carousel
+import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.ParkingGrid
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.utilities.Location
@@ -92,6 +93,23 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         if (locationData != null && locationData!!.isEmpty().not()) {
             result = fetchValuesWithOkHttp(locationData!![1].ip)
         }
+    }
+
+    if (locationData == null || result == null || userData == null)  {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material.Text(
+                text = "Fetching Data",
+                style = AppTheme.typography.labelNormal
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularIndicator()
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+        return
     }
 
     Column(

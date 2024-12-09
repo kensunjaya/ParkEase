@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
 import com.example.parkease.composables.Carousel
+import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.ParkingGrid
 import com.example.parkease.utilities.Location
 import com.example.parkease.utilities.ParkingLotData
@@ -60,6 +61,23 @@ fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavCo
                 println("Error: ${exception.message}")
             }
         )
+    }
+
+    if (locationData == null)  {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material.Text(
+                text = "Fetching Data",
+                style = AppTheme.typography.labelNormal
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularIndicator()
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+        return
     }
 
     Column(

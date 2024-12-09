@@ -16,7 +16,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalParking
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -66,20 +65,24 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        if (currentRoute in listOf("Home", "Active Parking", "Settings")) {
+                        val validRoutes = tabBarItems.map { it.title } + listOf("viewParkingLot", "bookingPage")
+                        if (currentRoute in validRoutes || currentRoute?.startsWith("viewParkingLot") == true || currentRoute?.startsWith("bookingPage") == true) {
                             TabView(tabBarItems, navController)
                         }
                     },
                     topBar = {
-                        TopAppBar(
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = AppTheme.colorScheme.softBlue,
-                                titleContentColor = AppTheme.colorScheme.primary,
-                            ),
-                            title = {
-                                Text("ParkEase", style = AppTheme.typography.labelLargeSemiBold)
-                            }
-                        )
+                        val validRoutes = tabBarItems.map { it.title } + listOf("viewParkingLot", "bookingPage")
+                        if (currentRoute in validRoutes || currentRoute?.startsWith("viewParkingLot") == true || currentRoute?.startsWith("bookingPage") == true) {
+                            TopAppBar(
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = AppTheme.colorScheme.softBlue,
+                                    titleContentColor = AppTheme.colorScheme.primary,
+                                ),
+                                title = {
+                                    Text("ParkEase", style = AppTheme.typography.labelLargeSemiBold)
+                                }
+                            )
+                        }
                     },
                 ) { innerPadding ->
                     NavHost(
