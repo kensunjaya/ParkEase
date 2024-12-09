@@ -114,6 +114,24 @@ class MainActivity : ComponentActivity() {
                                 Log.e("NavigationError", "Location ID argument is missing")
                             }
                         }
+                        composable(
+                            route = "bookingPage/{locationId}/{parkingSpaceId}"
+                        ) { navBackStackEntry ->
+                            val locationId = navBackStackEntry.arguments?.getString("locationId")
+                            val parkingSpaceId = navBackStackEntry.arguments?.getString("parkingSpaceId")
+
+                            if (locationId != null && parkingSpaceId != null) {
+                                BookingPage(
+                                    locationId = locationId,
+                                    parkingSpaceId = parkingSpaceId,
+                                    navController = navController
+                                )
+                            } else {
+                                Log.e("NavigationError", "Required arguments are missing")
+                            }
+                        }
+
+
 //                        composable("home/{name}") { backStackEntry ->
 //                            val name = backStackEntry.arguments?.getString("name")
 //                            HomeScreen(name = name ?: "Unknown", navController)

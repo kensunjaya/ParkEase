@@ -39,18 +39,9 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun ViewParkingLot(locationId: String, navController: NavController) {
-    var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
+fun BookingPage(locationId: String, parkingSpaceId: String, navController: NavController) {
     var locationData by remember{ mutableStateOf<Location?>(null) }
     val coroutineScope = rememberCoroutineScope()
-
-    // Code snippets for fetching Parking Space data (occupied or not)
-    // Later to be moved to a page after user choose Location
-    LaunchedEffect(locationData) {
-        if (locationData != null) {
-            result = fetchValuesWithOkHttp(locationData!!.ip)
-        }
-    }
 
     // Call firebase API for fetching locationData
     LaunchedEffect(Unit) {
@@ -68,13 +59,6 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
         )
     }
 
-    // Refresh parking space data (refetch data)
-    // Later to be moved to a Page after user choose Location
-    suspend fun refetch() {
-        if (locationData != null) {
-            result = fetchValuesWithOkHttp(locationData!!.ip)
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -99,36 +83,15 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        when (result) {
-            null -> Text(text = "Loading...")
-            emptyList<ParkingLotData>() ->
-                Text(text = "Connection Timeout. Server is possibly down or unreachable.")
-            else -> {
-                ParkingGrid(
-                    parkingSlots = result!!,
-                    navController = navController,
-                    locationId = locationId
+                Text(
+                    text = parkingSpaceId,
+                    style = AppTheme.typography.titleBig,
+                    color = AppTheme.colorScheme.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        // Later to be moved to a Page after user choose Location
-        ElevatedButton(
-            onClick = {
-                coroutineScope.launch {
-                    refetch()
-                }
-            })
-        {
-            Text("Refresh")
-        }
     }
 }
