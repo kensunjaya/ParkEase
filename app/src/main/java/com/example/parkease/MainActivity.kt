@@ -15,7 +15,11 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalParking
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
@@ -36,6 +40,7 @@ data class TabBarItem(
 )
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -57,11 +62,29 @@ class MainActivity : ComponentActivity() {
                 } else {
                     "login"
                 }
-                Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-                    if (currentRoute in listOf("Home", "Active Parking", "Settings")) {
-                        TabView(tabBarItems, navController)
-                    }
-                }) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        val validRoutes = tabBarItems.map { it.title } + listOf("viewParkingLot", "bookingPage")
+                        if (currentRoute in validRoutes || currentRoute?.startsWith("viewParkingLot") == true || currentRoute?.startsWith("bookingPage") == true) {
+                            TabView(tabBarItems, navController)
+                        }
+                    },
+                    topBar = {
+                        val validRoutes = tabBarItems.map { it.title } + listOf("viewParkingLot", "bookingPage")
+                        if (currentRoute in validRoutes || currentRoute?.startsWith("viewParkingLot") == true || currentRoute?.startsWith("bookingPage") == true) {
+                            TopAppBar(
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = AppTheme.colorScheme.softBlue,
+                                    titleContentColor = AppTheme.colorScheme.primary,
+                                ),
+                                title = {
+                                    Text("ParkEase", style = AppTheme.typography.labelLargeSemiBold)
+                                }
+                            )
+                        }
+                    },
+                ) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = startDestination,
@@ -94,6 +117,24 @@ class MainActivity : ComponentActivity() {
                                 Log.e("NavigationError", "Location ID argument is missing")
                             }
                         }
+                        composable(
+                            route = "bookingPage/{locationId}/{parkingSpaceId}"
+                        ) { navBackStackEntry ->
+                            val locationId = navBackStackEntry.arguments?.getString("locationId")
+                            val parkingSpaceId = navBackStackEntry.arguments?.getString("parkingSpaceId")
+
+                            if (locationId != null && parkingSpaceId != null) {
+                                BookingPage(
+                                    locationId = locationId,
+                                    parkingSpaceId = parkingSpaceId,
+                                    navController = navController
+                                )
+                            } else {
+                                Log.e("NavigationError", "Required arguments are missing")
+                            }
+                        }
+
+
 //                        composable("home/{name}") { backStackEntry ->
 //                            val name = backStackEntry.arguments?.getString("name")
 //                            HomeScreen(name = name ?: "Unknown", navController)

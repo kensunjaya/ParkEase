@@ -26,3 +26,8 @@ data class User(
     val activeParking: ActiveParking? = null,
     val name: String = ""
 )
+
+data class BookingData(
+    var parkingSpaceId: String = "",
+    var locationId: String = ""
+)

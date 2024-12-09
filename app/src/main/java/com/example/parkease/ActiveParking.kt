@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.ui.theme.AppTheme
 import com.example.parkease.utilities.ActiveParking
 import com.example.parkease.utilities.User
@@ -72,6 +73,23 @@ fun ActiveParkingScreen(navController: NavController) {
                 println("Error: ${exception.message}")
             }
         )
+    }
+
+    if (userData == null)  {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material.Text(
+                text = "Fetching Data",
+                style = AppTheme.typography.labelNormal
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularIndicator()
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+        return
     }
 
     Column(

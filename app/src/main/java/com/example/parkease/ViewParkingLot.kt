@@ -28,7 +28,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import com.example.parkease.composables.Carousel
+import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.ParkingGrid
+import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.utilities.Location
 import com.example.parkease.utilities.ParkingLotData
 import com.example.parkease.utilities.User
@@ -72,9 +74,29 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
     // Later to be moved to a Page after user choose Location
     suspend fun refetch() {
         if (locationData != null) {
+            result = null
             result = fetchValuesWithOkHttp(locationData!!.ip)
         }
     }
+
+    if (locationData == null || result == null)  {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Fetching Data",
+                style = AppTheme.typography.labelNormal
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularIndicator()
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+        return
+    }
+
+
 
     Column(
         modifier = Modifier
@@ -83,7 +105,6 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(modifier = Modifier.height(16.dp))
 
         // Mapping parking lot data
@@ -109,22 +130,25 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
             emptyList<ParkingLotData>() ->
                 Text(text = "Connection Timeout. Server is possibly down or unreachable.")
             else -> {
-                ParkingGrid(result!!)
+                ParkingGrid(
+                    parkingSlots = result!!,
+                    navController = navController,
+                    locationId = locationId
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-        // Later to be moved to a Page after user choose Location
-        ElevatedButton(
+        PrimaryButton(
             onClick = {
                 coroutineScope.launch {
                     refetch()
                 }
-            })
-        {
-            Text("Refresh")
-        }
+            },
+            label = "Refresh",
+            disabled = result == null,
+            modifier = Modifier.padding(4.dp)
+        )
     }
 }

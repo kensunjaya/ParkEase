@@ -1,6 +1,5 @@
 package com.example.parkease
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,8 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,9 +26,9 @@ import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.example.parkease.composables.Carousel
+import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.ParkingGrid
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.utilities.Location
@@ -44,7 +42,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(name: String, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
-    var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
     var locationData by remember{ mutableStateOf<List<Location>?>(null) }
     var currentPage by remember { mutableStateOf(0) }
     var userData by remember { mutableStateOf<User?>(null) }
@@ -58,7 +55,7 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
             documentId = Firebase.auth.currentUser!!.email!!,
             type = User::class.java,
             onSuccess = {
-                data -> userData = data
+                    data -> userData = data
             },
             onFailure = { exception ->
                 println("Error: ${exception.message}")
@@ -66,13 +63,6 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         )
     }
 
-    // Code snippets for fetching Parking Space data (occupied or not)
-    // Later to be moved to a page after user choose Location
-    LaunchedEffect(locationData) {
-        if (locationData != null && locationData!!.isEmpty().not()) {
-            result = fetchValuesWithOkHttp(locationData!![1].ip)
-        }
-    }
 
     // Call firebase API for fetching locationData
     LaunchedEffect(Unit) {
@@ -89,12 +79,21 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
         )
     }
 
-    // Refresh parking space data (refetch data)
-    // Later to be moved to a Page after user choose Location
-    suspend fun refetch() {
-        if (locationData != null && locationData!!.isEmpty().not()) {
-            result = fetchValuesWithOkHttp(locationData!![1].ip)
+    if (locationData == null || userData == null)  {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material.Text(
+                text = "Fetching Data",
+                style = AppTheme.typography.labelNormal
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularIndicator()
+            Spacer(modifier = Modifier.height(32.dp))
         }
+        return
     }
 
     Column(
@@ -128,32 +127,17 @@ fun HomeScreen(name: String, navController: NavController, authViewModel: AuthVi
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mapping parking lot data
-        // Later to be moved to a Page after user choose Location
-//        when {
-//            result == null -> Text(text = "Loading...")
-//            result == emptyList<ParkingLotData>() ->
-//                Text(text = "Unavailable")
-//            else -> {
-//                ParkingGrid(result!!)
-//            }
-//        }
-
-        // Later to be moved to a Page after user choose Location
-
         when (userData?.activeParking) {
-            null -> ElevatedButton(
-                onClick = {
-                    navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AppTheme.colorScheme.softBlue,
-                    disabledContainerColor = Color.Gray,
-                    contentColor = AppTheme.colorScheme.onPrimary,
-                ),)
-            {
-                Text("View Parking Lot")
-            }
+            null ->
+                PrimaryButton(
+                    onClick = {
+                        navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
+                    },
+                    label = "View available spaces",
+                    disabled = locationData == null || userData == null,
+                    modifier = Modifier.padding(4.dp)
+                )
+
             else -> Text(
                 text = "You must end your current parking session before booking a new one.",
                 style = AppTheme.typography.labelNormal,
