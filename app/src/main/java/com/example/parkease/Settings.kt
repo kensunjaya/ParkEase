@@ -2,12 +2,20 @@ package com.example.parkease
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocalParking
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,26 +72,72 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Column(modifier = Modifier.padding(start = 40.dp)) {
-            Text(
-                text = "Name: ${userData!!.name}",
-                fontSize = 20.sp,
+        androidx.compose.material3.Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, // Padding kiri
+                    end = 16.dp,   // Padding kanan
+                    top = 0.dp,   // Padding atas lebih besar
+                    bottom = 32.dp)
+                .height(150.dp),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
             )
+        {
+            Column(modifier = Modifier.padding(start = 20.dp, top = 22.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Filled.Person, // Replace with actual icon
+                        contentDescription = "Profile",
+                        tint = AppTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = "${userData!!.name}",
+                        style = AppTheme.typography.labelLargeSemiBold
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = "Email: ${Firebase.auth.currentUser!!.email}",
-                fontSize = 20.sp,
-            )
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                "Active Parking: ${userData!!.activeParking}",
-                 fontSize = 20.sp,
-            )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Filled.Email, // Replace with actual icon
+                        contentDescription = "Profile",
+                        tint = AppTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = "${Firebase.auth.currentUser!!.email}",
+                        style = AppTheme.typography.labelNormalSemiBold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Filled.LocalParking, // Replace with actual icon
+                        contentDescription = "Status",
+                        tint = AppTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = "Active Parking: ${userData!!.activeParking}",
+                        style = AppTheme.typography.labelNormalSemiBold
+                    )
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         PrimaryButton(
             onClick =
