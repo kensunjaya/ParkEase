@@ -30,5 +30,5 @@ data class Booking(
 data class User(
     val activeParking: ActiveParking? = null,
     val name: String = "",
-    val booking: Booking? = null,
+    var booking: Booking? = null,
 )

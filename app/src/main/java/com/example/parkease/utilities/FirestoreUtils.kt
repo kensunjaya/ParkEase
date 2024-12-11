@@ -64,7 +64,7 @@ fun <T : Any> createDocumentWithFields(
         }
 }
 
-fun <T: Any> editDocumentField(
+fun <T> editDocumentField(
     collectionName: String,
     documentName: String,
     field: String,

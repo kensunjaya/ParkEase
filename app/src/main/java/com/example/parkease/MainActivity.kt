@@ -9,9 +9,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalParking
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalParking
 import androidx.compose.material.icons.outlined.Settings
@@ -47,8 +49,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
             val activeParkingTab = TabBarItem(title = "Active Parking", selectedIcon = Icons.Filled.LocalParking, unselectedIcon = Icons.Outlined.LocalParking, badgeAmount = 7)
+            val bookingTab = TabBarItem(title = "Reservation", selectedIcon = Icons.Filled.Book, unselectedIcon = Icons.Outlined.Book)
             val settingsTab = TabBarItem(title = "Settings", selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings)
-            val tabBarItems = listOf(homeTab, activeParkingTab, settingsTab)
+
+            val tabBarItems = listOf(homeTab, activeParkingTab, bookingTab, settingsTab)
 
             AppTheme {
                 val navController = rememberNavController()
@@ -144,6 +148,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(activeParkingTab.title) {
                             ActiveParkingScreen(navController)
+                        }
+                        composable(bookingTab.title) {
+                            ActiveBookingScreen(navController)
                         }
                         composable(settingsTab.title) {
                             SettingsPage(navController)
