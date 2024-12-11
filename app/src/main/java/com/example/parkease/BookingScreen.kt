@@ -110,6 +110,7 @@ fun BookingPage(locId: String, parkingSpaceId: String, navController: NavControl
                         onSuccess = { success ->
                             if (success) {
                                 println("Successfully booked parking space $parkingSpaceId")
+                                navController.navigate("Reservation")
                             }
                         },
                         onFailure = { exception ->

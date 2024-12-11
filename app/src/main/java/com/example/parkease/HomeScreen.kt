@@ -45,9 +45,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    name: String,
     navController: NavController,
-    authViewModel: AuthViewModel = viewModel()
 ) {
     var locationData by remember { mutableStateOf<List<Location>?>(null) }
     var currentPage by remember { mutableStateOf(0) }
@@ -120,8 +118,8 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        when (userData?.activeParking) {
-            null -> PrimaryButton(
+        when {
+            userData?.activeParking == null && userData?.booking == null -> PrimaryButton(
                 onClick = {
                     navController.navigate("viewParkingLot/${locationData!![currentPage].id}")
                 },
@@ -135,7 +133,7 @@ fun HomeScreen(
                 textColor = AppTheme.colorScheme.secondary
             )
             else -> Text(
-                text = "You currently have an active parking session. End it before booking a new spot.",
+                text = "You currently have an active session. End it before booking a new spot.",
                 style = AppTheme.typography.labelNormal,
                 textAlign = TextAlign.Center,
                 color = AppTheme.colorScheme.anchor,

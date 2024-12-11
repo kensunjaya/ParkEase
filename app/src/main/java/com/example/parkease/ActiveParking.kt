@@ -31,9 +31,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.parkease.composables.CircularIndicator
+import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.ui.theme.AppTheme
 import com.example.parkease.utilities.ActiveParking
 import com.example.parkease.utilities.User
+import com.example.parkease.utilities.editDocumentField
 import com.example.parkease.utilities.fetchDocument
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -60,7 +62,7 @@ fun ActiveParkingScreen(navController: NavController) {
                 if (data?.activeParking != null) {
                     fetchDocument(
                         collectionName = "locations",
-                        documentId = data.activeParking.id,
+                        documentId = data.activeParking.locationId,
                         type = ActiveParking::class.java,
                         onSuccess = { parkingData ->
                             if (parkingData != null) {
@@ -112,7 +114,7 @@ fun ActiveParkingScreen(navController: NavController) {
             style = AppTheme.typography.labelLargeSemiBold,
             color = AppTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (activeParkingData != null) {
             val startMillis = activeParkingData?.start!!.toDate().time
@@ -125,7 +127,6 @@ fun ActiveParkingScreen(navController: NavController) {
             numberFormat.decimalFormatSymbols = symbols
             numberFormat.maximumFractionDigits = 2
 
-            // Information Card
             androidx.compose.material3.Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -214,18 +215,35 @@ fun ActiveParkingScreen(navController: NavController) {
                     )
                 }
             }
+            PrimaryButton(
+                onClick = {
+                    editDocumentField(
+                        collectionName = "users",
+                        documentName = Firebase.auth.currentUser!!.email!!,
+                        field = "activeParking",
+                        value = null,
+                        onSuccess = { success ->
+                            if (success) {
+                                println("Proceeding to payment...")
+                                navController.navigate("Home")
+                            }
+                        },
+                        onFailure = { exception ->
+                            println("Error: ${exception.message}")
+                        }
+                    )
 
-//            ElevatedButton(
-//                onClick = {
-//                    navController.navigate("stopParking")
-//                },
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 16.dp),
-//                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-//            ) {
-//                Text(text = "End Parking Session")
-//            }
+                },
+                color = AppTheme.colorScheme.bluePale,
+                label = "Proceed to Payment",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(width = 250.dp, height = 50.dp)
+                    .align(Alignment.CenterHorizontally),
+                textColor = AppTheme.colorScheme.secondary
+
+            )
+
         } else {
             Text(
                 text = "You don't have any active parking sessions.",

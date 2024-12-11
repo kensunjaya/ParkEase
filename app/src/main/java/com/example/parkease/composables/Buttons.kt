@@ -47,6 +47,7 @@ fun SecondaryButton(
     label: String,
     disabled: Boolean = false,
     color: Color = Color.Transparent,
+    textColor: Color = Color.White,
     onClick: () -> Unit
 ) {
     Button(
@@ -59,12 +60,12 @@ fun SecondaryButton(
             contentColor = AppTheme.colorScheme.primary,
         ),
         shape = AppTheme.shape.container,
-        border = BorderStroke(2.dp, AppTheme.colorScheme.primary),
+        border = BorderStroke(2.dp, color),
     ) {
         Text(
             text = label,
             style = AppTheme.typography.labelNormalSemiBold,
-            color = AppTheme.colorScheme.primary,
+            color = textColor,
         )
     }
 }

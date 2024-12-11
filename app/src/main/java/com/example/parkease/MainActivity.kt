@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
-            val activeParkingTab = TabBarItem(title = "Active Parking", selectedIcon = Icons.Filled.LocalParking, unselectedIcon = Icons.Outlined.LocalParking, badgeAmount = 7)
+            val activeParkingTab = TabBarItem(title = "Active Parking", selectedIcon = Icons.Filled.LocalParking, unselectedIcon = Icons.Outlined.LocalParking)
             val bookingTab = TabBarItem(title = "Reservation", selectedIcon = Icons.Filled.Book, unselectedIcon = Icons.Outlined.Book)
             val settingsTab = TabBarItem(title = "Settings", selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings)
 
@@ -138,13 +138,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-
-//                        composable("home/{name}") { backStackEntry ->
-//                            val name = backStackEntry.arguments?.getString("name")
-//                            HomeScreen(name = name ?: "Unknown", navController)
-//                        }
                         composable(homeTab.title) {
-                            HomeScreen(name = user?.displayName ?: "Unknown", navController)
+                            HomeScreen(navController)
                         }
                         composable(activeParkingTab.title) {
                             ActiveParkingScreen(navController)
