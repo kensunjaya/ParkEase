@@ -9,6 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachEmail
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.MarkEmailUnread
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -69,34 +76,79 @@ fun WaitingForVerificationScreen(
                     ).show()
                 }
             }
-
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(horizontal = 24.dp, vertical = 48.dp),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "A verification email has been sent to $email",
-            style = AppTheme.typography.labelLargeSemiBold,
+        androidx.compose.material3.Card(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                androidx.compose.material3.Icon(
+                    imageVector = Icons.Default.MarkEmailUnread,
+                    contentDescription = "Email Verification",
+                    modifier = Modifier.size(80.dp),
+                    tint = AppTheme.colorScheme.primary
+                )
+
+                Text(
+                    text = "We're almost there!",
+                    style = AppTheme.typography.labelLargeSemiBold,
+                    color = AppTheme.colorScheme.primary
+                )
+                Text(
+                    text = "A verification email has been sent to:",
+                    style = AppTheme.typography.labelNormal,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = email,
+                    style = AppTheme.typography.labelNormalSemiBold,
+                    color = AppTheme.colorScheme.anchor,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "Please check your inbox and click the verification link",
+                    style = AppTheme.typography.labelNormal,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        androidx.compose.material3.CircularProgressIndicator(
+            modifier = Modifier.size(40.dp),
+            color = AppTheme.colorScheme.bluePale
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "We're checking your email verification status...",
+            style = AppTheme.typography.labelNormal,
+            textAlign = TextAlign.Center
+        )
 
-        }
+        Spacer(modifier = Modifier.height(24.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             SecondaryButton(
-                onClick =
-                {
+                onClick = {
                     authViewModel.signOut()
                     navController.navigate("login")
                 },
@@ -112,11 +164,10 @@ fun WaitingForVerificationScreen(
                     ).show()
                     isCooldownActive = true
                 },
-                label = if (isCooldownActive) "Wait $cooldownTimeLeft seconds" else "Resend email verification",
-                disabled = isCooldownActive
+                label = if (isCooldownActive) "Wait $cooldownTimeLeft seconds" else "Resend Email",
+                disabled = isCooldownActive,
+                color = AppTheme.colorScheme.bluePale,
             )
         }
-
-
     }
 }
