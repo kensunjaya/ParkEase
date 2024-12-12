@@ -1,6 +1,7 @@
 package com.example.parkease
 
 import android.graphics.drawable.Icon
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.WatchLater
@@ -31,9 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.parkease.composables.CircularIndicator
+import com.example.parkease.composables.ConfirmationDialog
 import com.example.parkease.composables.PrimaryButton
+import com.example.parkease.composables.QRCodeComposable
 import com.example.parkease.ui.theme.AppTheme
 import com.example.parkease.utilities.ActiveParking
+import com.example.parkease.utilities.Booking
 import com.example.parkease.utilities.User
 import com.example.parkease.utilities.editDocumentField
 import com.example.parkease.utilities.fetchDocument
@@ -83,28 +90,14 @@ fun ActiveParkingScreen(navController: NavController) {
             }
         )
     }
+    val scrollState = rememberScrollState()
 
-    if (userData == null)  {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            androidx.compose.material.Text(
-                text = "Fetching Data",
-                style = AppTheme.typography.labelNormal
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            CircularIndicator()
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-        return
-    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(20.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -114,7 +107,7 @@ fun ActiveParkingScreen(navController: NavController) {
             style = AppTheme.typography.labelLargeSemiBold,
             color = AppTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (activeParkingData != null) {
             val startMillis = activeParkingData?.start!!.toDate().time
@@ -130,7 +123,7 @@ fun ActiveParkingScreen(navController: NavController) {
             androidx.compose.material3.Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 12.dp),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
             ) {
                 Column(
@@ -151,7 +144,7 @@ fun ActiveParkingScreen(navController: NavController) {
                         )
                         Text(
                             text = activeParkingData?.name ?: "N/A",
-                            style = AppTheme.typography.labelLargeSemiBold
+                            style = AppTheme.typography.labelNormalSemiBold
                         )
                     }
 
@@ -167,7 +160,7 @@ fun ActiveParkingScreen(navController: NavController) {
                         )
                         Text(
                             text = activeParkingData?.parkingSlotId ?: "N/A",
-                            style = AppTheme.typography.labelLargeSemiBold
+                            style = AppTheme.typography.labelNormalSemiBold
                         )
                     }
 
@@ -215,6 +208,20 @@ fun ActiveParkingScreen(navController: NavController) {
                     )
                 }
             }
+            Text(
+                text = "Scan the QR code below at the exit gate to confirm payment.",
+                style = AppTheme.typography.labelNormal,
+                color = AppTheme.colorScheme.anchor,
+                textAlign = TextAlign.Center
+            )
+
+            QRCodeComposable(
+                data = "${Firebase.auth.currentUser!!.email!!} : $startMillis",
+                modifier = Modifier
+                    .size(280.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+
             PrimaryButton(
                 onClick = {
                     editDocumentField(
@@ -235,7 +242,7 @@ fun ActiveParkingScreen(navController: NavController) {
 
                 },
                 color = AppTheme.colorScheme.bluePale,
-                label = "Proceed to Payment",
+                label = "Confirm Payment",
                 modifier = Modifier
                     .padding(8.dp)
                     .size(width = 250.dp, height = 50.dp)
@@ -243,6 +250,7 @@ fun ActiveParkingScreen(navController: NavController) {
                 textColor = AppTheme.colorScheme.secondary
 
             )
+
 
         } else {
             Text(

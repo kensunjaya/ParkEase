@@ -327,7 +327,7 @@ fun ActiveBookingScreen(navController: NavController) {
                         )
                         Text(
                             text = bookingData?.name ?: "N/A",
-                            style = AppTheme.typography.labelLargeSemiBold
+                            style = AppTheme.typography.labelNormalSemiBold
                         )
                     }
 
@@ -343,7 +343,7 @@ fun ActiveBookingScreen(navController: NavController) {
                         )
                         Text(
                             text = bookingData?.parkingSlotId ?: "N/A",
-                            style = AppTheme.typography.labelLargeSemiBold
+                            style = AppTheme.typography.labelNormalSemiBold
                         )
                     }
 
