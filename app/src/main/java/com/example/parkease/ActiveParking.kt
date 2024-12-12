@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,7 +57,7 @@ import kotlin.math.roundToInt
 fun ActiveParkingScreen(navController: NavController) {
     var userData by remember { mutableStateOf<User?>(null) }
     var activeParkingData by remember { mutableStateOf<ActiveParking?>(null) }
-
+    var openAlertDialog = remember { mutableStateOf(false)}
     LaunchedEffect(Unit) {
         fetchDocument(
             collectionName = "users",
@@ -90,6 +91,26 @@ fun ActiveParkingScreen(navController: NavController) {
     }
     val scrollState = rememberScrollState()
 
+    when {
+        openAlertDialog.value -> {
+            val startMillis = activeParkingData?.start!!.toDate().time
+            val currentMillis = System.currentTimeMillis()
+            val hoursElapsed = (currentMillis - startMillis) / 3600000.0
+            ConfirmationDialog(
+                onDismissRequest = {
+                    openAlertDialog.value = false
+                },
+                onConfirmation = {
+                    openAlertDialog.value = false
+                    navController.navigate("Home")
+                },
+                dialogTitle = "Receipt",
+                dialogText = "Location: ${activeParkingData!!.name}\nParking Slot: ${activeParkingData!!.parkingSlotId}\nCost: ${activeParkingData!!.costPerHour!!.times(ceil(hoursElapsed))}\nStarted at: ${activeParkingData?.start!!.toDate()}",
+                icon = Icons.Default.Info,
+                onlyShowConfirmButton = true,
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -230,7 +251,7 @@ fun ActiveParkingScreen(navController: NavController) {
                         onSuccess = { success ->
                             if (success) {
                                 println("Proceeding to payment...")
-                                navController.navigate("Home")
+                                openAlertDialog.value = true
                             }
                         },
                         onFailure = { exception ->
