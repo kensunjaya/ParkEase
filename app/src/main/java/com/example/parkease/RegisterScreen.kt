@@ -157,6 +157,7 @@ fun RegisterScreen(
                     )
                 },
                 label = "Register",
+                color = AppTheme.colorScheme.bluePale,
             )
         }
         Spacer(modifier = Modifier.height(150.dp))

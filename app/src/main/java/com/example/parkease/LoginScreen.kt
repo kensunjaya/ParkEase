@@ -130,6 +130,7 @@ fun LoginScreen(
                     )
                 },
                 label = "Sign in",
+                color = AppTheme.colorScheme.bluePale,
             )
         }
         Spacer(modifier = Modifier.height(150.dp))
