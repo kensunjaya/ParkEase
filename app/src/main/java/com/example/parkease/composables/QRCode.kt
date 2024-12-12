@@ -3,10 +3,8 @@ package com.example.parkease.composables
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.content.ContextCompat
 import com.example.parkease.ui.theme.AppTheme
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType

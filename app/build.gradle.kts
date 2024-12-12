@@ -96,5 +96,6 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.28.0")
     implementation (libs.core)
     implementation (libs.zxing.android.embedded)
+    testImplementation (libs.junit)
 
 }

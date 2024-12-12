@@ -1,7 +1,5 @@
 package com.example.parkease
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

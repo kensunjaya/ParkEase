@@ -1,6 +1,5 @@
 package com.example.parkease
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,12 +13,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.WatchLater
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,35 +26,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.ConfirmationDialog
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.composables.QRCodeComposable
 import com.example.parkease.ui.theme.AppTheme
 import com.example.parkease.utilities.ActiveParking
-import com.example.parkease.utilities.Booking
 import com.example.parkease.utilities.User
 import com.example.parkease.utilities.editDocumentField
 import com.example.parkease.utilities.fetchDocument
 import com.google.firebase.Firebase
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.auth
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.roundToInt
 
 @Composable
 fun ActiveParkingScreen(navController: NavController) {
     var userData by remember { mutableStateOf<User?>(null) }
     var activeParkingData by remember { mutableStateOf<ActiveParking?>(null) }
-    var openAlertDialog = remember { mutableStateOf(false)}
+    val openAlertDialog = remember { mutableStateOf(false)}
     LaunchedEffect(Unit) {
         fetchDocument(
             collectionName = "users",
@@ -105,7 +97,7 @@ fun ActiveParkingScreen(navController: NavController) {
                     navController.navigate("Home")
                 },
                 dialogTitle = "Receipt",
-                dialogText = "Location: ${activeParkingData!!.name}\nParking Slot: ${activeParkingData!!.parkingSlotId}\nCost: ${activeParkingData!!.costPerHour!!.times(ceil(hoursElapsed))}\nStarted at: ${activeParkingData?.start!!.toDate()}",
+                dialogText = "Location: ${activeParkingData!!.name}\nParking Slot: ${activeParkingData!!.parkingSlotId}\nCost: ${activeParkingData!!.costPerHour.times(ceil(hoursElapsed))}\nStarted at: ${activeParkingData?.start!!.toDate()}",
                 icon = Icons.Default.Info,
                 onlyShowConfirmButton = true,
             )

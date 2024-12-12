@@ -1,7 +1,6 @@
 package com.example.parkease
 
 import android.widget.Toast
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.parkease.composables.CustomTextField
 import com.example.parkease.composables.PrimaryButton
-import com.example.parkease.composables.SecondaryButton
 import com.example.parkease.ui.theme.AppTheme
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth

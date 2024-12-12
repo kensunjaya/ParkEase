@@ -1,6 +1,5 @@
 package com.example.parkease
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import com.example.parkease.ui.theme.AppTheme
 import com.example.parkease.utilities.User
 import com.example.parkease.utilities.createDocumentWithFields
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
 @Composable

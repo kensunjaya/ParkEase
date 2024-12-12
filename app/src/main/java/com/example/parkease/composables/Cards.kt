@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.parkease.utilities.ParkingLotData
 import com.example.parkease.ui.theme.AppTheme
-import com.example.parkease.utilities.Booking
 
 @Composable
 fun ParkingSlotCard(

@@ -1,6 +1,5 @@
 package com.example.parkease
 
-import android.graphics.drawable.Icon
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,8 +51,8 @@ fun ActiveBookingScreen(navController: NavController) {
     var bookingData by remember { mutableStateOf<Booking?>(null) }
     val openAlertDialog = remember { mutableStateOf(false) }
 
-    var remainingMinutes by remember { mutableStateOf(0) }
-    var remainingSeconds by remember { mutableStateOf(0) }
+    var remainingMinutes by remember { mutableIntStateOf(0) }
+    var remainingSeconds by remember { mutableIntStateOf(0) }
     var bookingExpired by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
@@ -67,7 +67,7 @@ fun ActiveBookingScreen(navController: NavController) {
                 if (data?.booking != null) {
                     fetchDocument(
                         collectionName = "locations",
-                        documentId = data!!.booking!!.locationId,
+                        documentId = data.booking!!.locationId,
                         type = Booking::class.java,
                         onSuccess = { parkingData ->
                             if (parkingData != null) {
@@ -153,7 +153,7 @@ fun ActiveBookingScreen(navController: NavController) {
                                                             "Your booking session has expired. Please book a new parking space.",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
-                                                        userData = null;
+                                                        userData = null
                                                         fetchUserData()
                                                     }
                                                 },
@@ -220,10 +220,10 @@ fun ActiveBookingScreen(navController: NavController) {
                                     value = ActiveParking(
                                         start = Timestamp(System.currentTimeMillis() / 1000, 0),
                                         parkingSlotId = tempBookingData!!.parkingSlotId,
-                                        locationId = tempBookingData!!.locationId
+                                        locationId = tempBookingData.locationId
                                     ),
-                                    onSuccess = { success ->
-                                        if (success) {
+                                    onSuccess = { isSuccess ->
+                                        if (isSuccess) {
                                             println("Active parking session started")
                                             navController.navigate("Active Parking")
                                         }

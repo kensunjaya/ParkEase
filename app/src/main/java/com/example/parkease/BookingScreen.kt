@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Text
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -22,40 +21,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.parkease.composables.SecondaryButton
 import com.example.parkease.ui.theme.AppTheme
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
-import com.example.parkease.composables.Carousel
 import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.ConfirmationDialog
-import com.example.parkease.composables.ParkingGrid
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.utilities.Booking
 import com.example.parkease.utilities.Location
-import com.example.parkease.utilities.ParkingLotData
-import com.example.parkease.utilities.User
 import com.example.parkease.utilities.editDocumentField
-import com.example.parkease.utilities.fetchCollection
 import com.example.parkease.utilities.fetchDocument
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
-
 
 @Composable
 fun BookingPage(locId: String, parkingSpaceId: String, navController: NavController) {
     var locationData by remember { mutableStateOf<Location?>(null) }
     val openAlertDialog = remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     // Fetch location data
     LaunchedEffect(Unit) {
