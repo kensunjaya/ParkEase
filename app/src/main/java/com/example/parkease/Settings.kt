@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.parkease.composables.CircularIndicator
 import com.example.parkease.composables.PrimaryButton
 import com.example.parkease.composables.SecondaryButton
 import com.example.parkease.ui.theme.AppTheme
@@ -57,7 +58,20 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
         )
     }
 
-    if (userData == null) {
+    if (userData == null || Firebase.auth.currentUser == null) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            androidx.compose.material.Text(
+                text = "Fetching Data",
+                style = AppTheme.typography.labelNormal
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularIndicator()
+            Spacer(modifier = Modifier.height(32.dp))
+        }
         return
     }
 
@@ -95,7 +109,7 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = "${userData!!.name}",
+                        text = userData!!.name,
                         style = AppTheme.typography.labelLargeSemiBold
                     )
                 }
@@ -140,8 +154,7 @@ fun SettingsPage(navController: NavController, authViewModel: AuthViewModel = vi
         Spacer(modifier = Modifier.height(10.dp))
 
         PrimaryButton(
-            onClick =
-            {
+            onClick = {
                 authViewModel.signOut()
                 navController.navigate("login")
             },

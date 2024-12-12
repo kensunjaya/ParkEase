@@ -272,8 +272,6 @@ fun ActiveBookingScreen(navController: NavController) {
             val totalElapsedMillis = currentMillis - startMillis
 
             val totalRemainingMillis = (10 * 60 * 1000) - totalElapsedMillis
-//            val remainingMinutes = (totalRemainingMillis / 60000).toInt()
-//            val remainingSeconds = (totalRemainingMillis % 60000 / 1000).toInt()
 
             if (totalRemainingMillis <= 0) {
                 editDocumentField(
@@ -300,7 +298,6 @@ fun ActiveBookingScreen(navController: NavController) {
                 )
 
             }
-            val hoursElapsed = (currentMillis - startMillis) / 3600000.0
 
             // Information Card
             androidx.compose.material3.Card(
