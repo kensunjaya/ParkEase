@@ -12,9 +12,7 @@ import java.net.SocketTimeoutException
 suspend fun fetchValuesWithOkHttp(url: String): List<ParkingLotData>? = withContext(Dispatchers.IO) {
     try {
         val client = OkHttpClient.Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(25, TimeUnit.SECONDS)
-            .writeTimeout(25, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
             .build()
         val request = Request.Builder()
             .url(url)

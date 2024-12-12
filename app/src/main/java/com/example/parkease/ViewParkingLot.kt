@@ -1,5 +1,6 @@
 package com.example.parkease
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,12 +34,14 @@ import com.example.parkease.utilities.ParkingLotData
 import com.example.parkease.utilities.fetchDocument
 import com.example.parkease.utilities.fetchValuesWithOkHttp
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 @Composable
 fun ViewParkingLot(locationId: String, navController: NavController) {
     var result by remember { mutableStateOf<List<ParkingLotData>?>(null) }
     var locationData by remember{ mutableStateOf<Location?>(null) }
+    var isRandomData by remember{ mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     // Code snippets for fetching Parking Space data (occupied or not)
@@ -70,6 +75,25 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
             result = null
             result = fetchValuesWithOkHttp(locationData!!.ip)
         }
+        if (result == emptyList<ParkingLotData>() && locationData != null) {
+            val rand = Random(System.currentTimeMillis())
+            result = List(rand.nextInt(4, 98)) {
+                ParkingLotData(
+                    id = "P${it+1}",
+                    status = rand.nextInt(0, 2),
+                )
+            }
+            isRandomData = true
+            Toast.makeText(
+                navController.context,
+                "Connection Timeout. Server is possibly down or unreachable. Showing random dummy data instead.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        }
+        else {
+            isRandomData = false
+        }
     }
 
     if (locationData == null || result == null)  {
@@ -89,12 +113,13 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
         return
     }
 
-
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -123,6 +148,13 @@ fun ViewParkingLot(locationId: String, navController: NavController) {
             emptyList<ParkingLotData>() ->
                 Text(text = "Connection Timeout. Server is possibly down or unreachable.")
             else -> {
+                if (isRandomData) {
+                    Text(
+                        text = "Showing random dummy data",
+                        style = AppTheme.typography.labelNormal,
+                        color = AppTheme.colorScheme.anchor,
+                    )
+                }
                 ParkingGrid(
                     parkingSlots = result!!,
                     navController = navController,

@@ -1,7 +1,5 @@
 package com.example.parkease
 
-import android.graphics.drawable.Icon
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

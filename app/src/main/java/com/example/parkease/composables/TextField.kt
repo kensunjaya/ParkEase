@@ -33,7 +33,7 @@ fun CustomTextField(
             focusedTextColor = AppTheme.colorScheme.primary,
             unfocusedTextColor = AppTheme.colorScheme.primary,
             disabledTextColor = AppTheme.colorScheme.onBackground.copy(alpha = 0.38f),
-            focusedContainerColor = Color.Transparent,
+            focusedContainerColor = AppTheme.colorScheme.anchor,
             unfocusedContainerColor = Color.Transparent,
             cursorColor = Color.Gray,
             focusedLabelColor = Color.Black,
